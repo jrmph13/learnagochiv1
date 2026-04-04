@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-label="Sunrise logic scene">
+  <defs>
+    <linearGradient id="sky3" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f8c58c"/>
+      <stop offset="58%" stop-color="#f0a39a"/>
+      <stop offset="100%" stop-color="#5a8db1"/>
+    </linearGradient>
+    <radialGradient id="sun3" cx="0.74" cy="0.22" r="0.25">
+      <stop offset="0%" stop-color="#ffe8a3"/>
+      <stop offset="100%" stop-color="#ffd084" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#sky3)"/>
+  <rect y="560" width="1600" height="340" fill="#4f778d" opacity="0.58"/>
+  <circle cx="1180" cy="220" r="110" fill="#ffe7ab" opacity="0.78"/>
+  <rect width="1600" height="900" fill="url(#sun3)"/>
+  <ellipse cx="810" cy="670" rx="650" ry="180" fill="#98c9de" opacity="0.45"/>
+  <g stroke="#ffe3b0" stroke-width="6" opacity="0.38">
+    <line x1="220" y1="520" x2="520" y2="260"/>
+    <line x1="340" y1="560" x2="670" y2="250"/>
+    <line x1="500" y1="620" x2="860" y2="280"/>
+    <line x1="660" y1="640" x2="1030" y2="310"/>
+  </g>
+</svg>

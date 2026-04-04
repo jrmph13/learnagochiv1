@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css?v=20260404p" />
   <title>Learnagochi</title>
 </head>
 <body>
@@ -14,17 +14,21 @@
   </section>
 
   <section id="cutscene-screen" class="cutscene" style="display: none;">
-      <img src="assets/Enter your name_.png" alt="Enter your name" />
-    <img src="assets/Hey, What’s your name_.png" alt="Hey, What's your name?" />
+    <img src="assets/Enter your name_.png" alt="Enter your name" />
+    <img src="assets/Hey, What's your name_.png" alt="Hey, What's your name?" />
 
-
-    <input
-      type="text"
-      id="player-name"
-      placeholder=""
-      maxlength="6"
-      autocomplete="off"
-    />
+    <form id="name-form" class="name-form">
+      <input
+        type="text"
+        id="player-name"
+        placeholder="Type your name..."
+        maxlength="12"
+        required
+        autocomplete="off"
+      />
+      <button type="submit" id="enter-name-button">Enter</button>
+      <p class="name-hint">Press Enter key or click Enter button</p>
+    </form>
 
     <img
       id="google-signin"
@@ -32,6 +36,39 @@
       alt="Sign in with Google"
       style="cursor: pointer"
     />
+  </section>
+
+  <section id="intro-sequence" class="intro-sequence" style="display: none;">
+    <div id="rainy-scene" class="scene">
+      <img src="assets/3.png" alt="Rainy view" />
+      <div class="scene-text">
+        <p>It is so rainy today....</p>
+        <p>I should at least get something done today.</p>
+      </div>
+    </div>
+
+    <div id="story-scene" class="scene story-scene" style="display: none;">
+      <div class="story-card">
+        <div class="story-sprite-wrap">
+          <div id="story-sprite" class="story-sprite" aria-label="Duck rescue story animation"></div>
+        </div>
+        <div class="story-copy">
+          <p id="story-step" class="story-step">Scene 1 / 8</p>
+          <p id="story-line">In a rainy pond, you found a small injured duck.</p>
+          <p id="story-subline">You chose to take it in and care for it.</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="loading-scene" class="scene" style="display: none;">
+      <img src="assets/4.png" alt="Loading scene" />
+      <div class="loading-text">Loading<span class="loading-dots"></span></div>
+      <div class="loading-bar">
+        <div class="loading-bar-fill"></div>
+      </div>
+    </div>
+
+    <button id="skip-intro" type="button">Skip intro...&gt;</button>
   </section>
 
   <footer class="socials">
@@ -49,7 +86,10 @@
 
   <audio id="bg-music" src="assets/bg-music.mp3" autoplay loop></audio>
   <img id="volume-button" src="assets/Volume-on.png" alt="Toggle Volume" />
+  <div id="fade-overlay"></div>
 
-  <script src="renderer.js"></script>
+  <script src="renderer.js?v=20260404r"></script>
 </body>
 </html>
+
+

@@ -1,26 +1,176 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Learnagochi Game</title>
+  <link rel="stylesheet" href="style.css?v=20260404j" />
 </head>
 <body>
-    <img src="assets/river-ils.png" alt="" id="main-video">
-    <div id="game-area">
-        <div id="box-container">
-            <img class="box" src="assets/string.png" alt="">
-            <img class="box" src="assets/bool.png" alt="">
-            <img class  ="box" src="assets/int.png" alt="">
-        </div>
-        <div id="value-container"> 
-                
-        </div>
+  <img src="../assets/river-ils.png" alt="Pond background" id="main-bg" />
+  <div id="scene-layer" class="scene-layer">
+    <img id="scene-art" src="../assets/scenes/scene-ch1-rain.svg" alt="Chapter scene art" />
+    <div id="scene-fx" class="scene-fx fx-rain"></div>
+  </div>
+
+  <header class="topbar">
+    <div class="brand">Learnagochi: Pond of Code</div>
+    <div class="topbar-actions">
+      <button id="settings-toggle" class="ui-btn" type="button">Settings</button>
+      <button id="journal-toggle" class="ui-btn" type="button">Journal</button>
+      <button id="home-button" class="ui-btn" type="button">Home</button>
     </div>
+  </header>
+
+  <section class="hud">
+    <div class="hud-item">Coins: <span id="coins-count">0</span></div>
+    <div class="hud-item">Bond Lv. <span id="bond-level">1</span></div>
+    <div class="bond-meter"><div id="bond-fill"></div></div>
+    <div class="hud-item" id="chapter-chip">Chapter 1 / 4</div>
+  </section>
+
+  <main id="game-stage">
+    <section id="duck-zone" class="panel">
+      <div class="duck-pond">
+        <img id="duck-character" src="../assets/characters/duck-idle.png" alt="Duck companion" />
+      </div>
+      <p id="duck-name">Bread Duck</p>
+      <p id="duck-dialogue" class="duck-dialogue">You saved me. Let us learn together, one line at a time.</p>
+
+      <div id="style-shop" class="style-shop"></div>
+    </section>
+
+    <section id="challenge-zone" class="panel">
+      <div class="chapter-strip" id="chapter-strip"></div>
+      <div id="challenge-header">
+        <h1 id="chapter-title">Chapter 1: Pond Basics</h1>
+        <p id="progress-text">1 / 10</p>
+      </div>
+      <div id="chapter-meta" class="chapter-meta">
+        <p id="chapter-story-hook">Story: You and your duck begin your first coding lesson beside the pond.</p>
+        <p id="chapter-learning-goal">Goal: Identify whether each value is string, bool, or int.</p>
+      </div>
+      <p id="programming-tag">Drag the value into the correct programming data type box.</p>
+
+      <div id="value-container"></div>
+
+      <div id="box-container">
+        <img class="box" data-type="string" src="../assets/string.png" alt="String box" />
+        <img class="box" data-type="bool" src="../assets/bool.png" alt="Boolean box" />
+        <img class="box" data-type="int" src="../assets/int.png" alt="Integer box" />
+      </div>
+    </section>
+  </main>
+
+  <aside id="settings-panel" class="overlay" aria-hidden="true">
+    <div class="modal notebook">
+      <button id="close-settings" class="close-btn" type="button" aria-label="Close settings">x</button>
+      <div class="notebook-grid">
+        <section>
+          <h2>Settings</h2>
+          <label for="bg-volume">Background Sound</label>
+          <input id="bg-volume" type="range" min="0" max="100" value="50" />
+
+          <label for="sfx-volume">Sound Effects</label>
+          <input id="sfx-volume" type="range" min="0" max="100" value="80" />
+        </section>
+
+        <section>
+          <h2>Chapters</h2>
+          <div id="chapter-buttons" class="chapter-buttons"></div>
+        </section>
+      </div>
+    </div>
+  </aside>
+
+  <aside id="journal-panel" class="overlay" aria-hidden="true">
+    <div class="modal journal">
+      <button id="close-journal" class="close-btn" type="button" aria-label="Close journal">x</button>
+      <h2>Learnagochi Design Journal</h2>
+      <div class="journal-grid">
+        <article>
+          <h3>Storyline</h3>
+          <ul>
+            <li>You found an injured duck in a pond and chose to take care of it.</li>
+            <li>The duck becomes your learning guide and coding companion.</li>
+            <li>Every chapter is part of the duck&rsquo;s recovery and your growth in programming.</li>
+          </ul>
+        </article>
+        <article>
+          <h3>Motivation (Intrinsic &amp; Extrinsic)</h3>
+          <ul>
+            <li>Intrinsic: players build emotional attachment through bond level, feedback, and duck reactions.</li>
+            <li>Extrinsic: every chapter clear and post-assessment gives coins/points.</li>
+            <li>Higher scores give higher rewards, encouraging mastery and replay.</li>
+          </ul>
+        </article>
+        <article>
+          <h3>Levels / Chapters</h3>
+          <ul>
+            <li>Total of <strong>4 chapters</strong>: Pond Basics, Variable Values, Logic Practice, Festival Assessment.</li>
+            <li>Each chapter has its own animated scene, story hook, and challenge set.</li>
+            <li>Each chapter ends with a post-assessment and reward summary.</li>
+          </ul>
+        </article>
+        <article>
+          <h3>Engagement Elements (Why Players Keep Playing)</h3>
+          <ul>
+            <li>Drag-and-drop coding loop with instant feedback and animated duck reactions.</li>
+            <li>Chapter unlock flow creates progression and curiosity.</li>
+            <li>Coins/points and dress-up customization create long-term goals.</li>
+          </ul>
+        </article>
+        <article>
+          <h3>Programming Elements</h3>
+          <ul>
+            <li>Core concepts: <code>string</code>, <code>bool</code>, and <code>int</code>.</li>
+            <li>Mixed literals include tricky pairs like <code>&quot;true&quot;</code> vs <code>true</code>.</li>
+            <li>Variable-style values and type sorting support beginner coding foundations.</li>
+          </ul>
+        </article>
+        <article>
+          <h3>Basis / Design Rationale</h3>
+          <ul>
+            <li>Based on mastery learning: repeat, get feedback, improve, then progress.</li>
+            <li>Designed for beginner learners/target players who need guided and playful practice.</li>
+            <li>Combines narrative care-taking + coding practice to make learning memorable.</li>
+          </ul>
+        </article>
+      </div>
+    </div>
+  </aside>
+
+  <aside id="assessment-panel" class="overlay" aria-hidden="true">
+    <div class="modal assessment">
+      <h2>Post Assessment</h2>
+      <p id="assessment-summary">Chapter complete.</p>
+      <div class="assessment-stats">
+        <div>Score: <span id="assessment-score">0%</span></div>
+        <div>Coins Earned: <span id="assessment-earned">0</span></div>
+        <div>Total Coins: <span id="assessment-total">0</span></div>
+      </div>
+      <button id="continue-btn" class="ui-btn large" type="button">Continue</button>
+    </div>
+  </aside>
+
+  <audio id="game-bgm" src="../assets/bg-music.mp3" loop></audio>
+
+  <aside id="chapter-cinematic" class="cinematic" aria-hidden="true">
+    <div class="cinematic-layer"></div>
+    <div class="cinematic-card">
+      <img id="cinematic-scene-art" class="cinematic-scene-art" src="../assets/scenes/scene-ch1-rain.svg" alt="Chapter cinematic scene" />
+      <p id="cinematic-chapter" class="cinematic-chapter">Chapter 1</p>
+      <p id="cinematic-line" class="cinematic-line">The rain calms down. A new lesson starts.</p>
+      <div id="cinematic-loading" class="cinematic-loading">
+        <div class="cinematic-loading-bar">
+          <div class="cinematic-loading-fill"></div>
+        </div>
+        <span>Preparing lesson...</span>
+      </div>
+      <button id="skip-cinematic" type="button" class="ui-btn cinematic-skip">Skip</button>
+    </div>
+  </aside>
+
+  <script src="main.js?v=20260404i"></script>
 </body>
-<script src="main.js"></script>
-
 </html>
-
-

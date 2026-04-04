@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-label="Festival coding night scene">
+  <defs>
+    <linearGradient id="night4" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2c2a5a"/>
+      <stop offset="100%" stop-color="#132642"/>
+    </linearGradient>
+    <radialGradient id="lamp4" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="#ffe59f"/>
+      <stop offset="100%" stop-color="#ff9f4f" stop-opacity="0.12"/>
+    </radialGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#night4)"/>
+  <rect y="570" width="1600" height="330" fill="#244363" opacity="0.6"/>
+  <ellipse cx="810" cy="680" rx="660" ry="170" fill="#6aa0c1" opacity="0.35"/>
+  <g opacity="0.92">
+    <circle cx="300" cy="170" r="78" fill="url(#lamp4)"/>
+    <circle cx="610" cy="130" r="72" fill="url(#lamp4)"/>
+    <circle cx="930" cy="165" r="80" fill="url(#lamp4)"/>
+    <circle cx="1240" cy="140" r="72" fill="url(#lamp4)"/>
+  </g>
+  <g stroke="#ffcb84" stroke-width="9" opacity="0.48">
+    <line x1="240" y1="130" x2="1360" y2="110"/>
+  </g>
+  <g fill="#ffe8a7" opacity="0.62">
+    <circle cx="460" cy="640" r="9"/>
+    <circle cx="690" cy="720" r="7"/>
+    <circle cx="940" cy="670" r="8"/>
+    <circle cx="1180" cy="730" r="10"/>
+  </g>
+</svg>

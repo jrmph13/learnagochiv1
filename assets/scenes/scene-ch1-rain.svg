@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-label="Rain pond scene">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#4f6f84"/>
+      <stop offset="100%" stop-color="#1f3d4c"/>
+    </linearGradient>
+    <radialGradient id="pond" cx="0.5" cy="0.65" r="0.45">
+      <stop offset="0%" stop-color="#97c7d5" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#1f5467" stop-opacity="0.4"/>
+    </radialGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <rect y="530" width="1600" height="370" fill="#2d4f5f" opacity="0.65"/>
+  <ellipse cx="800" cy="650" rx="670" ry="190" fill="url(#pond)"/>
+  <g fill="#b7d8e4" opacity="0.25">
+    <rect x="120" y="40" width="5" height="180" transform="rotate(17 120 40)"/>
+    <rect x="300" y="10" width="5" height="210" transform="rotate(17 300 10)"/>
+    <rect x="540" y="30" width="5" height="190" transform="rotate(17 540 30)"/>
+    <rect x="760" y="20" width="5" height="220" transform="rotate(17 760 20)"/>
+    <rect x="980" y="40" width="5" height="200" transform="rotate(17 980 40)"/>
+    <rect x="1180" y="15" width="5" height="210" transform="rotate(17 1180 15)"/>
+    <rect x="1410" y="30" width="5" height="190" transform="rotate(17 1410 30)"/>
+  </g>
+  <g fill="#ddeff5" opacity="0.42">
+    <circle cx="280" cy="675" r="16"/>
+    <circle cx="525" cy="700" r="9"/>
+    <circle cx="820" cy="690" r="13"/>
+    <circle cx="1080" cy="720" r="11"/>
+    <circle cx="1305" cy="670" r="15"/>
+  </g>
+</svg>
