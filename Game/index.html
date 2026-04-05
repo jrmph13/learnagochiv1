@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Learnagochi Game</title>
-  <link rel="stylesheet" href="style.css?v=20260404j" />
+  <link rel="stylesheet" href="style.css?v=20260405a" />
 </head>
 <body>
   <img src="../assets/river-ils.png" alt="Pond background" id="main-bg" />
@@ -26,7 +26,7 @@
     <div class="hud-item">Coins: <span id="coins-count">0</span></div>
     <div class="hud-item">Bond Lv. <span id="bond-level">1</span></div>
     <div class="bond-meter"><div id="bond-fill"></div></div>
-    <div class="hud-item" id="chapter-chip">Chapter 1 / 4</div>
+    <div class="hud-item" id="chapter-chip">Chapter 1 / 5</div>
   </section>
 
   <main id="game-stage">
@@ -107,9 +107,9 @@
         <article>
           <h3>Levels / Chapters</h3>
           <ul>
-            <li>Total of <strong>4 chapters</strong>: Pond Basics, Variable Values, Logic Practice, Festival Assessment.</li>
+            <li>Total of <strong>5 chapters</strong>: Pond Basics, Variable Values, Logic Practice, Festival Showcase, Final Mastery.</li>
             <li>Each chapter has its own animated scene, story hook, and challenge set.</li>
-            <li>Each chapter ends with a post-assessment and reward summary.</li>
+            <li>Chapter 5 is the final mastery run, then the ending story (Scene 13-16 + The End) appears.</li>
           </ul>
         </article>
         <article>
@@ -153,6 +153,19 @@
     </div>
   </aside>
 
+  <aside id="ending-panel" class="overlay" aria-hidden="true">
+    <div class="modal ending">
+      <h2 id="ending-title">Final Story</h2>
+      <p id="ending-scene-step">Scene 13 / 16</p>
+      <p id="ending-line">Eppy walks with you, stronger than ever.</p>
+      <p id="ending-subline">Your rescue became a learning journey.</p>
+      <div class="ending-actions">
+        <button id="ending-next-btn" class="ui-btn large" type="button">Next Scene</button>
+        <button id="ending-home-btn" class="ui-btn large" type="button">Home</button>
+      </div>
+    </div>
+  </aside>
+
   <audio id="game-bgm" src="../assets/bg-music.mp3" loop></audio>
 
   <aside id="chapter-cinematic" class="cinematic" aria-hidden="true">
@@ -171,6 +184,6 @@
     </div>
   </aside>
 
-  <script src="main.js?v=20260404i"></script>
+  <script src="main.js?v=20260405a"></script>
 </body>
 </html>

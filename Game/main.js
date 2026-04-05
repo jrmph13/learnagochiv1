@@ -36,6 +36,13 @@ const assessmentScore = document.getElementById('assessment-score');
 const assessmentEarned = document.getElementById('assessment-earned');
 const assessmentTotal = document.getElementById('assessment-total');
 const continueBtn = document.getElementById('continue-btn');
+const endingPanel = document.getElementById('ending-panel');
+const endingTitle = document.getElementById('ending-title');
+const endingSceneStep = document.getElementById('ending-scene-step');
+const endingLine = document.getElementById('ending-line');
+const endingSubline = document.getElementById('ending-subline');
+const endingNextBtn = document.getElementById('ending-next-btn');
+const endingHomeBtn = document.getElementById('ending-home-btn');
 
 const chapterCinematic = document.getElementById('chapter-cinematic');
 const cinematicChapter = document.getElementById('cinematic-chapter');
@@ -70,9 +77,9 @@ const duckReactions = {
 const chapters = {
   1: {
     title: 'Chapter 1: Pond Basics',
-    cue: 'Let us begin with literals: string, bool, and int.',
-    storyHook: 'Story: You dry the duck beside the pond while writing your first values.',
-    learningGoal: 'Goal: Classify each literal as string, bool, or int.',
+    cue: 'Let us begin with core literals: string, bool, and int.',
+    storyHook: 'Story: You dry Eppy beside the pond while learning first coding values.',
+    learningGoal: 'Goal: Classify each basic literal correctly.',
     sceneAsset: '../assets/scenes/scene-ch1-rain.svg',
     sceneFx: 'rain',
     cinematicLines: [
@@ -81,23 +88,23 @@ const chapters = {
     ],
     prepLabel: 'Preparing literal drills...',
     questions: [
-      { value: '200', type: 'int', hint: 'Whole numbers with no quotes are int.' },
-      { value: '"hello"', type: 'string', hint: 'Anything in quotes is string.' },
-      { value: 'false', type: 'bool', hint: 'false is boolean.' },
-      { value: '0', type: 'int', hint: 'Zero is still int.' },
-      { value: '"Duck"', type: 'string', hint: 'Text in quotes is string.' },
-      { value: 'true', type: 'bool', hint: 'true is boolean.' },
-      { value: '-9', type: 'int', hint: 'Negative whole numbers are int.' },
-      { value: '"rainy day"', type: 'string', hint: 'Sentence in quotes is string.' },
-      { value: '77', type: 'int', hint: 'Whole number means int.' },
-      { value: '"42"', type: 'string', hint: 'Quoted number becomes string.' }
+      { value: '"duck"', type: 'string', hint: 'Quoted text is string.' },
+      { value: '15', type: 'int', hint: 'Whole number is int.' },
+      { value: 'true', type: 'bool', hint: 'Logical true is bool.' },
+      { value: '"pond"', type: 'string', hint: 'Word in quotes is string.' },
+      { value: '-3', type: 'int', hint: 'Negative whole number is int.' },
+      { value: 'false', type: 'bool', hint: 'Logical false is bool.' },
+      { value: '108', type: 'int', hint: 'Still int without quotes.' },
+      { value: '"Eppy"', type: 'string', hint: 'Name in quotes is string.' },
+      { value: '0', type: 'int', hint: 'Zero is int.' },
+      { value: '"learn"', type: 'string', hint: 'Quoted verb is string.' }
     ]
   },
   2: {
     title: 'Chapter 2: Variable Values',
-    cue: 'Variables hold values. Focus on the value type, not the name.',
-    storyHook: 'Story: Your duck now follows your pen as you label notes and track progress.',
-    learningGoal: 'Goal: Read each assigned value and sort it into the correct data type box.',
+    cue: 'Variables hold values. Read the literal carefully each time.',
+    storyHook: 'Story: Eppy follows your notes as you label progress and inventory values.',
+    learningGoal: 'Goal: Sort variable-like values into the correct type.',
     sceneAsset: '../assets/scenes/scene-ch2-study.svg',
     sceneFx: 'breeze',
     cinematicLines: [
@@ -106,23 +113,23 @@ const chapters = {
     ],
     prepLabel: 'Preparing variable drills...',
     questions: [
-      { value: '"coins"', type: 'string', hint: 'Quoted labels are string.' },
-      { value: '1', type: 'int', hint: 'Whole number is int.' },
-      { value: '"playerName"', type: 'string', hint: 'Variable label in quotes is string.' },
-      { value: 'false', type: 'bool', hint: 'false is bool.' },
-      { value: '999', type: 'int', hint: 'Whole number remains int.' },
-      { value: '"levelUp"', type: 'string', hint: 'Quoted word remains string.' },
-      { value: 'true', type: 'bool', hint: 'true is bool.' },
-      { value: '42', type: 'int', hint: 'Whole number remains int.' },
-      { value: '"A"', type: 'string', hint: 'Character in quotes is string.' },
-      { value: '-120', type: 'int', hint: 'Negative whole value is int.' }
+      { value: '"coins"', type: 'string', hint: 'Quoted label is string.' },
+      { value: '256', type: 'int', hint: 'No quotes and whole number means int.' },
+      { value: '"player_name"', type: 'string', hint: 'Symbols inside quotes remain string.' },
+      { value: 'true', type: 'bool', hint: 'Boolean literal is bool.' },
+      { value: '-120', type: 'int', hint: 'Negative whole value is int.' },
+      { value: '"level_up"', type: 'string', hint: 'Snake-case text in quotes is string.' },
+      { value: 'false', type: 'bool', hint: 'Boolean literal is bool.' },
+      { value: '42', type: 'int', hint: 'No decimal and no quotes = int.' },
+      { value: '"mission-2"', type: 'string', hint: 'Hyphen text in quotes is string.' },
+      { value: '730', type: 'int', hint: 'Whole number literal is int.' }
     ]
   },
   3: {
     title: 'Chapter 3: Logic Practice',
-    cue: 'Final stretch. Some values look tricky, so inspect carefully.',
-    storyHook: 'Story: At sunrise, your duck is ready for the logic check mission.',
-    learningGoal: 'Goal: Distinguish booleans from string look-alikes and clear the mission.',
+    cue: 'Some values look similar. Focus on quotes and exact literal form.',
+    storyHook: 'Story: At sunrise, Eppy starts a logic-check mission with tricky look-alikes.',
+    learningGoal: 'Goal: Distinguish bool/int from string look-alikes.',
     sceneAsset: '../assets/scenes/scene-ch3-sunrise.svg',
     sceneFx: 'sunrise',
     cinematicLines: [
@@ -131,46 +138,98 @@ const chapters = {
     ],
     prepLabel: 'Preparing logic drills...',
     questions: [
-      { value: 'true', type: 'bool', hint: 'No quotes and logical value means bool.' },
-      { value: '"true"', type: 'string', hint: 'Quoted true is string.' },
-      { value: '100', type: 'int', hint: 'Whole number means int.' },
-      { value: '"Done"', type: 'string', hint: 'Quoted text is string.' },
-      { value: 'false', type: 'bool', hint: 'false is bool.' },
-      { value: '-1000', type: 'int', hint: 'Negative whole number is int.' },
-      { value: '"bool"', type: 'string', hint: 'Word bool in quotes is string.' },
-      { value: '0', type: 'int', hint: '0 is int.' },
-      { value: 'true', type: 'bool', hint: 'true is bool.' },
-      { value: '"final"', type: 'string', hint: 'Quoted value is string.' }
+      { value: '"true"', type: 'string', hint: 'Quoted value is string, even if word is true.' },
+      { value: 'true', type: 'bool', hint: 'Unquoted true is bool.' },
+      { value: '"0"', type: 'string', hint: 'Quoted zero is string.' },
+      { value: '0', type: 'int', hint: 'Unquoted zero is int.' },
+      { value: '"-12"', type: 'string', hint: 'Quoted negative number is string.' },
+      { value: '-12', type: 'int', hint: 'Unquoted negative whole number is int.' },
+      { value: '"false"', type: 'string', hint: 'Quoted false is string.' },
+      { value: 'false', type: 'bool', hint: 'Unquoted false is bool.' },
+      { value: '"100"', type: 'string', hint: 'Quoted number stays string.' },
+      { value: '100', type: 'int', hint: 'Unquoted whole number is int.' }
     ]
   },
   4: {
-    title: 'Chapter 4: Festival Assessment',
-    cue: 'Festival day challenge: combine speed and accuracy.',
-    storyHook: 'Story: The pond festival starts, and your duck joins the coding showcase.',
-    learningGoal: 'Goal: Clear a mixed challenge set to earn bonus coins and full trust.',
+    title: 'Chapter 4: Festival Showcase',
+    cue: 'Festival day: apply everything with calm and accuracy.',
+    storyHook: 'Story: The pond festival starts, and Eppy joins your coding showcase.',
+    learningGoal: 'Goal: Solve a mixed set without relying on repeated patterns.',
     sceneAsset: '../assets/scenes/scene-ch4-festival.svg',
     sceneFx: 'festival',
     cinematicLines: [
-      'Lantern lights glow over the pond as the final challenge begins.',
-      'Your duck bows to the crowd and waits for your guidance.'
+      'Lantern lights glow over the pond as the showcase begins.',
+      'Eppy greets the crowd while you solve mixed value checks.'
     ],
-    prepLabel: 'Preparing festival finals...',
+    prepLabel: 'Preparing festival showcase...',
     questions: [
-      { value: '"festival"', type: 'string', hint: 'Quoted words are string.' },
+      { value: '"festival_badge"', type: 'string', hint: 'Quoted text is string.' },
       { value: '2048', type: 'int', hint: 'Whole number is int.' },
-      { value: 'false', type: 'bool', hint: 'Logical false is bool.' },
-      { value: '"0"', type: 'string', hint: 'Quoted zero is string.' },
-      { value: '-1', type: 'int', hint: 'Negative whole value is int.' },
-      { value: 'true', type: 'bool', hint: 'Logical true is bool.' },
-      { value: '"duckWins"', type: 'string', hint: 'Quoted variable-like text is string.' },
-      { value: '77', type: 'int', hint: 'Whole number is int.' },
-      { value: '"false"', type: 'string', hint: 'In quotes, false is string.' },
-      { value: 'false', type: 'bool', hint: 'Without quotes, false is bool.' },
-      { value: '315', type: 'int', hint: 'Whole number remains int.' },
-      { value: '"pond medal"', type: 'string', hint: 'Quoted phrase is string.' }
+      { value: 'true', type: 'bool', hint: 'Unquoted true is bool.' },
+      { value: '"score:90"', type: 'string', hint: 'Colon inside quotes remains string.' },
+      { value: '-1', type: 'int', hint: 'Negative whole number is int.' },
+      { value: 'false', type: 'bool', hint: 'Unquoted false is bool.' },
+      { value: '"duckWins"', type: 'string', hint: 'Variable-like text in quotes is string.' },
+      { value: '315', type: 'int', hint: 'Still int without quotes.' },
+      { value: '"chapter4"', type: 'string', hint: 'Quoted label is string.' },
+      { value: '88', type: 'int', hint: 'Whole number is int.' },
+      { value: '"logic_passed"', type: 'string', hint: 'Quoted underscored text is string.' },
+      { value: '4096', type: 'int', hint: 'Large whole number is int.' }
+    ]
+  },
+  5: {
+    title: 'Chapter 5: Final Mastery',
+    cue: 'Final chapter: prove you understand literals in real coding-like values.',
+    storyHook: 'Story: Eppy now trusts your guidance. One last mastery run before The End.',
+    learningGoal: 'Goal: Clear the final mastery set using careful reading and logic.',
+    sceneAsset: '../assets/scenes/scene-ch4-festival.svg',
+    sceneFx: 'sunrise',
+    cinematicLines: [
+      'Eppy opens the final notebook page marked: Mastery Check.',
+      'This is your last chapter before The End.'
+    ],
+    prepLabel: 'Preparing final mastery...',
+    questions: [
+      { value: '"start_game"', type: 'string', hint: 'Quoted command-like text is string.' },
+      { value: '512', type: 'int', hint: 'Whole number is int.' },
+      { value: 'false', type: 'bool', hint: 'Unquoted false is bool.' },
+      { value: '"512"', type: 'string', hint: 'Quoted number is string.' },
+      { value: '-204', type: 'int', hint: 'Negative whole number is int.' },
+      { value: 'true', type: 'bool', hint: 'Unquoted true is bool.' },
+      { value: '"isReady"', type: 'string', hint: 'Name in quotes is string.' },
+      { value: '73', type: 'int', hint: 'No quotes and whole number means int.' },
+      { value: '"false"', type: 'string', hint: 'Quoted false is string.' },
+      { value: '0', type: 'int', hint: 'Zero is int.' },
+      { value: '"pond level 5"', type: 'string', hint: 'Sentence in quotes is string.' },
+      { value: '9999', type: 'int', hint: 'Whole number is int.' },
+      { value: '"true"', type: 'string', hint: 'Quoted true is string.' },
+      { value: 'false', type: 'bool', hint: 'Literal false is bool.' }
     ]
   }
 };
+
+const endingScenes = [
+  {
+    scene: 13,
+    line: 'Scene 13: Eppy returns to the pond with a calm, brave smile.',
+    subline: 'You both remember how the rescue began.'
+  },
+  {
+    scene: 14,
+    line: 'Scene 14: Eppy rests beside your notes after all coding lessons.',
+    subline: 'Practice, patience, and care built real progress.'
+  },
+  {
+    scene: 15,
+    line: 'Scene 15: Eppy stands proud as your learning companion.',
+    subline: 'From injured duck to confident guide.'
+  },
+  {
+    scene: 16,
+    line: 'Scene 16: The End.',
+    subline: 'A story of rescue, recovery, and programming growth with Eppy.'
+  }
+];
 
 const totalChapters = Object.keys(chapters).length;
 let currentChapter = Number(localStorage.getItem('learnagochiCurrentChapter') || '1');
@@ -207,6 +266,7 @@ let cinematicPlaying = false;
 let cinematicSkipRequested = false;
 let cinematicRunId = 0;
 let chapterLoadToken = 0;
+let endingSceneIndex = 0;
 
 function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
@@ -494,6 +554,7 @@ function spawnValue() {
 
 function finishChapter() {
   chapterCompleted = true;
+  const isFinalChapter = currentChapter === totalChapters;
 
   if (activeValue) {
     activeValue.remove();
@@ -520,18 +581,30 @@ function finishChapter() {
   persistState();
 
   if (assessmentSummary) {
-    const text = score >= 80
-      ? `Great chapter clear. ${roundCorrect}/${total} correct, your duck trusts your logic.`
-      : `You got ${roundCorrect}/${total}. Review tricky values, then try again for better rewards.`;
+    let text;
+    if (isFinalChapter) {
+      text = score >= 80
+        ? `Final chapter cleared. ${roundCorrect}/${total} correct. Ending story is now unlocked.`
+        : `Final chapter finished with ${roundCorrect}/${total}. Ending story unlocked, then replay for higher rewards.`;
+    } else {
+      text = score >= 80
+        ? `Great chapter clear. ${roundCorrect}/${total} correct, your duck trusts your logic.`
+        : `You got ${roundCorrect}/${total}. Review tricky values, then try again for better rewards.`;
+    }
     assessmentSummary.textContent = text;
   }
   if (assessmentScore) assessmentScore.textContent = `${score}%`;
   if (assessmentEarned) assessmentEarned.textContent = String(earned);
   if (assessmentTotal) assessmentTotal.textContent = String(coins);
+  if (continueBtn) {
+    continueBtn.textContent = isFinalChapter ? 'Show Ending Story' : 'Continue';
+  }
 
   openOverlay(assessmentPanel);
   setDuckReaction('complete', 1200);
-  setDialogue('Post assessment complete. Coins added to your bag!', 2400);
+  setDialogue(isFinalChapter
+    ? 'Final chapter complete. Ending story is ready.'
+    : 'Post assessment complete. Coins added to your bag!', 2400);
 }
 
 function handleDrop(droppedBox) {
@@ -643,6 +716,42 @@ function closeOverlay(overlay) {
   overlay.setAttribute('aria-hidden', 'true');
 }
 
+function renderEndingScene() {
+  const current = endingScenes[endingSceneIndex] || endingScenes[endingScenes.length - 1];
+  if (!current) return;
+
+  if (endingTitle) {
+    endingTitle.textContent = endingSceneIndex === endingScenes.length - 1
+      ? 'Final Story - The End'
+      : 'Final Story';
+  }
+  if (endingSceneStep) endingSceneStep.textContent = `Scene ${current.scene} / 16`;
+  if (endingLine) endingLine.textContent = current.line;
+  if (endingSubline) endingSubline.textContent = current.subline;
+  if (endingNextBtn) {
+    endingNextBtn.textContent = endingSceneIndex === endingScenes.length - 1 ? 'Finish' : 'Next Scene';
+  }
+}
+
+function openEndingStory() {
+  endingSceneIndex = 0;
+  renderEndingScene();
+  openOverlay(endingPanel);
+  setDialogue('Final story unlocked. You finished all chapters!', 2600);
+  setDuckReaction('complete', 1100);
+}
+
+function advanceEndingStory() {
+  if (endingSceneIndex < endingScenes.length - 1) {
+    endingSceneIndex += 1;
+    renderEndingScene();
+    return;
+  }
+
+  closeOverlay(endingPanel);
+  setDialogue('The End. Start again anytime to earn more coins.', 2400);
+}
+
 function openCinematic() {
   if (!chapterCinematic) return;
   chapterCinematic.classList.add('open');
@@ -733,7 +842,7 @@ if (closeSettings) closeSettings.addEventListener('click', () => closeOverlay(se
 if (journalToggle) journalToggle.addEventListener('click', () => openOverlay(journalPanel));
 if (closeJournal) closeJournal.addEventListener('click', () => closeOverlay(journalPanel));
 
-[settingsPanel, journalPanel, assessmentPanel].forEach((panel) => {
+[settingsPanel, journalPanel, assessmentPanel, endingPanel].forEach((panel) => {
   if (!panel) return;
   panel.addEventListener('click', (event) => {
     if (event.target === panel) closeOverlay(panel);
@@ -743,6 +852,11 @@ if (closeJournal) closeJournal.addEventListener('click', () => closeOverlay(jour
 if (continueBtn) {
   continueBtn.addEventListener('click', () => {
     closeOverlay(assessmentPanel);
+    if (currentChapter === totalChapters && chapterCompleted) {
+      openEndingStory();
+      return;
+    }
+
     if (currentChapter < totalChapters && unlockedChapter >= currentChapter + 1) {
       loadChapter(currentChapter + 1, { withCinematic: true });
     } else {
@@ -751,10 +865,24 @@ if (continueBtn) {
   });
 }
 
+if (endingNextBtn) {
+  endingNextBtn.addEventListener('click', () => {
+    advanceEndingStory();
+  });
+}
+
+if (endingHomeBtn) {
+  endingHomeBtn.addEventListener('click', () => {
+    closeOverlay(endingPanel);
+    window.location.href = '../index.html';
+  });
+}
+
 document.addEventListener('keydown', (event) => {
   if (event.key === 'Escape') {
     closeOverlay(settingsPanel);
     closeOverlay(journalPanel);
+    closeOverlay(endingPanel);
     if (cinematicPlaying) cinematicSkipRequested = true;
   }
 });
@@ -802,6 +930,7 @@ async function loadChapter(chapterNumber, options = {}) {
   updateHud();
   updateProgress();
   persistState();
+  if (continueBtn) continueBtn.textContent = 'Continue';
 
   if (withCinematic) {
     await playChapterCinematic(currentChapterData());

@@ -69,6 +69,7 @@ let storyAnimationRunId = 0;
 const STORY_SHEET_COLUMNS = 4;
 const STORY_SHEET_ROWS = 4;
 const STORY_TOTAL_FRAMES = STORY_SHEET_COLUMNS * STORY_SHEET_ROWS;
+const INTRO_SCENE_LIMIT = 12;
 const storyImage = new Image();
 storyImage.src = 'assets/characters/spritesheet-story.png';
 
@@ -91,7 +92,7 @@ const storyNarrative = [
   { line: 'A story of rescue, recovery, and learning with Eppy.', subline: 'Scene 16: Your coding companion.' }
 ];
 
-const STORY_FRAME_COUNT = Math.min(STORY_TOTAL_FRAMES, storyNarrative.length);
+const STORY_FRAME_COUNT = Math.min(STORY_TOTAL_FRAMES, storyNarrative.length, INTRO_SCENE_LIMIT);
 
 if (storyImage.complete && storyImage.naturalWidth > 0) {
   storyImageReady = true;
