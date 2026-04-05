@@ -1476,7 +1476,20 @@ function confirmExitToHome(mode = 'game') {
 }
 
 function navigateToHome() {
-  window.location.href = '../index.html';
+  const gamePathPattern = /\/Game\/index\.html$/i;
+  const tryFallbackHome = () => {
+    if (gamePathPattern.test(window.location.pathname)) {
+      window.location.replace('../index.html');
+    }
+  };
+
+  if (window.history.length > 1) {
+    window.history.back();
+    setTimeout(tryFallbackHome, 260);
+    return;
+  }
+
+  window.location.replace('../index.html');
 }
 
 function openCinematic() {
