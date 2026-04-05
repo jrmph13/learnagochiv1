@@ -28,6 +28,7 @@ const exitButton = document.getElementById('exit-button');
 const googleSignInButton = document.getElementById('google-signin');
 
 const GAME_START_URL = 'Game/index.html?v=20260404j';
+const EXIT_REDIRECT_URL = 'https://www.google.com/';
 const INTRO_SEEN_KEY = 'learnagochiIntroSeen';
 
 const DEFAULT_TIMINGS = {
@@ -504,15 +505,7 @@ if (skipIntroButton) {
 if (exitButton) {
   exitButton.addEventListener('click', () => {
     if (!confirm('Close this tab?')) return;
-
-    window.close();
-
-    try {
-      window.open('', '_self');
-      window.close();
-    } catch (error) {
-      window.location.href = 'about:blank';
-    }
+    window.location.replace(EXIT_REDIRECT_URL);
   });
 }
 
