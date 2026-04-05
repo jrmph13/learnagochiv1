@@ -1468,6 +1468,17 @@ function finishEndingStory() {
   setDialogue('The End. Start again anytime to earn more coins.', 2400);
 }
 
+function confirmExitToHome(mode = 'game') {
+  const message = mode === 'ending'
+    ? 'Exit ending and return to the home screen?'
+    : 'Exit game and return to the home screen?';
+  return window.confirm(message);
+}
+
+function navigateToHome() {
+  window.location.href = '../index.html';
+}
+
 function openCinematic() {
   if (!chapterCinematic) return;
   chapterCinematic.classList.add('open');
@@ -1635,8 +1646,9 @@ if (endingNextBtn) {
 
 if (endingHomeBtn) {
   endingHomeBtn.addEventListener('click', () => {
+    if (!confirmExitToHome('ending')) return;
     finishEndingStory();
-    window.location.href = '../index.html';
+    navigateToHome();
   });
 }
 
@@ -1652,7 +1664,8 @@ document.addEventListener('keydown', (event) => {
 
 if (homeButton) {
   homeButton.addEventListener('click', () => {
-    window.location.href = '../index.html';
+    if (!confirmExitToHome('game')) return;
+    navigateToHome();
   });
 }
 
