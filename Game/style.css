@@ -57,6 +57,14 @@ body::before {
   pointer-events: none;
 }
 
+.effects-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 45;
+  pointer-events: none;
+  overflow: hidden;
+}
+
 #scene-art {
   width: 100%;
   height: 100%;
@@ -174,6 +182,19 @@ body::before {
   background: rgba(12, 32, 41, 0.56);
   border: 1px solid rgba(255, 255, 255, 0.16);
   font-size: clamp(18px, 1.4vw, 22px);
+  transition: transform 0.24s ease, background-color 0.24s ease, box-shadow 0.24s ease;
+}
+
+.hud-item.coins-up {
+  background: rgba(97, 170, 100, 0.7);
+  box-shadow: 0 0 14px rgba(146, 235, 123, 0.45);
+  transform: translateY(-1px) scale(1.04);
+}
+
+.hud-item.coins-down {
+  background: rgba(178, 100, 88, 0.72);
+  box-shadow: 0 0 12px rgba(255, 126, 95, 0.35);
+  transform: scale(0.98);
 }
 
 .bond-meter {
@@ -304,6 +325,19 @@ body::before {
   display: flex;
   flex-direction: column;
   padding: 10px 12px;
+  position: relative;
+  overflow: hidden;
+  transition: box-shadow 0.28s ease, transform 0.28s ease;
+}
+
+#challenge-zone.zone-flash-good {
+  box-shadow: inset 0 0 0 2px rgba(148, 244, 178, 0.8), 0 0 22px rgba(108, 220, 155, 0.38);
+  animation: zoneGlow 0.5s ease;
+}
+
+#challenge-zone.zone-flash-bad {
+  box-shadow: inset 0 0 0 2px rgba(255, 152, 132, 0.76), 0 0 20px rgba(255, 131, 102, 0.34);
+  animation: zoneShake 0.45s ease;
 }
 
 .chapter-strip {
@@ -433,6 +467,22 @@ body::before {
   cursor: grab;
   user-select: none;
   touch-action: none;
+  opacity: 0;
+  transform: translateY(8px) scale(0.98);
+  transition: transform 0.2s ease, opacity 0.22s ease, box-shadow 0.2s ease;
+}
+
+.draggable-value.is-ready {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.draggable-value.value-win {
+  animation: valueWinPop 0.44s ease;
+}
+
+.draggable-value.value-shake {
+  animation: valueShake 0.5s ease;
 }
 
 #box-container {
@@ -469,6 +519,48 @@ body::before {
   transform: translate(-50%, -50%);
   pointer-events: none;
   z-index: 16;
+}
+
+.floating-score {
+  position: fixed;
+  transform: translate(-50%, -50%);
+  font-size: clamp(18px, 1.6vw, 28px);
+  font-weight: 700;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  animation: scoreFloat 0.95s ease forwards;
+  z-index: 49;
+  pointer-events: none;
+}
+
+.floating-score.gain {
+  color: #f6ffd7;
+}
+
+.floating-score.spent {
+  color: #ffd7cf;
+}
+
+.effect-bit,
+.effect-coin {
+  position: fixed;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 48;
+}
+
+.effect-bit {
+  border-radius: 2px;
+  animation: burstBit var(--dur, 800ms) ease-out forwards;
+}
+
+.effect-bit.splash {
+  border-radius: 999px;
+  filter: saturate(1.1);
+}
+
+.effect-coin {
+  animation: coinArc var(--dur, 900ms) cubic-bezier(0.21, 0.84, 0.34, 1) forwards;
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.25));
 }
 
 .overlay {
@@ -876,6 +968,78 @@ body::before {
   }
 }
 
+@keyframes scoreFloat {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -35%) scale(0.92);
+  }
+  12% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -150%) scale(1.06);
+  }
+}
+
+@keyframes burstBit {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.65) rotate(0deg);
+  }
+  18% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) rotate(var(--rot));
+  }
+}
+
+@keyframes coinArc {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.72) rotate(0deg);
+  }
+  14% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(1.04) rotate(var(--rot));
+  }
+}
+
+@keyframes valueShake {
+  0% { transform: translateY(0) translateX(0); }
+  18% { transform: translateY(0) translateX(-6px); }
+  36% { transform: translateY(0) translateX(6px); }
+  54% { transform: translateY(0) translateX(-5px); }
+  72% { transform: translateY(0) translateX(4px); }
+  100% { transform: translateY(0) translateX(0); }
+}
+
+@keyframes valueWinPop {
+  0% { transform: translateY(0) scale(1); }
+  44% { transform: translateY(-2px) scale(1.08); }
+  100% { transform: translateY(0) scale(1); }
+}
+
+@keyframes zoneGlow {
+  0% { filter: brightness(1); }
+  45% { filter: brightness(1.12); }
+  100% { filter: brightness(1); }
+}
+
+@keyframes zoneShake {
+  0% { transform: translateX(0); }
+  24% { transform: translateX(-5px); }
+  48% { transform: translateX(5px); }
+  72% { transform: translateX(-3px); }
+  100% { transform: translateX(0); }
+}
+
 @media (max-width: 1280px) {
   .brand {
     font-size: clamp(20px, 2.1vw, 30px);
@@ -933,6 +1097,16 @@ body::before {
   .hud {
     gap: 6px;
     top: calc(max(8px, env(safe-area-inset-top)) + 94px);
+  }
+
+  .chapter-strip {
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .hint-controls {
+    gap: 6px;
+    align-items: flex-start;
   }
 
   .hud-item {
@@ -1001,6 +1175,10 @@ body::before {
     grid-template-rows: minmax(250px, 38dvh) 1fr;
   }
 
+  #challenge-zone {
+    padding: 9px 8px;
+  }
+
   #duck-name {
     font-size: clamp(24px, 7vw, 32px);
   }
@@ -1026,6 +1204,20 @@ body::before {
 
   .hint-status {
     font-size: clamp(14px, 3.8vw, 18px);
+  }
+
+  #value-container {
+    min-height: 150px;
+  }
+
+  .draggable-value {
+    left: 14px;
+    top: 14px;
+  }
+
+  #box-container {
+    gap: 8px;
+    padding: 10px 4px 4px;
   }
 }
 

@@ -14,10 +14,13 @@ const chapterLearningGoal = document.getElementById('chapter-learning-goal');
 const programmingTag = document.getElementById('programming-tag');
 const hintToggleBtn = document.getElementById('hint-toggle-btn');
 const hintStatus = document.getElementById('hint-status');
+const challengeZone = document.getElementById('challenge-zone');
+const effectsLayer = document.getElementById('effects-layer');
 
 const coinsCount = document.getElementById('coins-count');
 const bondLevel = document.getElementById('bond-level');
 const bondFill = document.getElementById('bond-fill');
+const coinHudItem = coinsCount ? coinsCount.closest('.hud-item') : null;
 
 const settingsToggle = document.getElementById('settings-toggle');
 const settingsPanel = document.getElementById('settings-panel');
@@ -244,6 +247,7 @@ let currentChapter = Number(localStorage.getItem('learnagochiCurrentChapter') ||
 let unlockedChapter = Number(localStorage.getItem('learnagochiUnlockedChapter') || '1');
 let coins = Number(localStorage.getItem('learnagochiCoins') || '0');
 let bondXp = Number(localStorage.getItem('learnagochiBondXp') || '0');
+let previousCoins = coins;
 
 let ownedStyles = [];
 try {
@@ -289,8 +293,10 @@ const ENDING_TRANSITION_MS = 480;
 const ENDING_AUTO_HOLD_MS = 2200;
 const endingSpriteSheet = new Image();
 endingSpriteSheet.src = '../assets/characters/spritesheet-story.png';
-const HINT_COIN_COST = 8;
-const DEFAULT_HINT_TEXT = 'Hints are hidden. Use coins to unlock a clue for this challenge.';
+const COIN_PARTICLE_ASSET = '../assets/coin.svg';
+const HINT_COIN_COST = 100;
+const DEFAULT_HINT_TEXT = 'Hints are hidden. Spend 100 coins to buy one bread clue for this challenge.';
+const EFFECT_COLORS = ['#f8d25b', '#ff8a78', '#8fd9ff', '#9fe39b', '#f4e9d1', '#ffc17e'];
 
 function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
@@ -298,6 +304,100 @@ function clamp(value, min, max) {
 
 function wait(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function randomBetween(min, max) {
+  return Math.random() * (max - min) + min;
+}
+
+function elementCenter(element) {
+  if (!element) return null;
+  const rect = element.getBoundingClientRect();
+  return {
+    x: rect.left + rect.width / 2,
+    y: rect.top + rect.height / 2
+  };
+}
+
+function pulseClass(element, className, duration = 420) {
+  if (!element) return;
+  element.classList.remove(className);
+  void element.offsetWidth;
+  element.classList.add(className);
+  setTimeout(() => {
+    element.classList.remove(className);
+  }, duration);
+}
+
+function flashChallengeZone(kind) {
+  if (!challengeZone) return;
+  const className = kind === 'good' ? 'zone-flash-good' : 'zone-flash-bad';
+  challengeZone.classList.remove('zone-flash-good', 'zone-flash-bad');
+  void challengeZone.offsetWidth;
+  challengeZone.classList.add(className);
+  setTimeout(() => {
+    challengeZone.classList.remove(className);
+  }, 520);
+}
+
+function spawnFloatingScore(text, x, y, kind = 'gain') {
+  if (!effectsLayer) return;
+  const node = document.createElement('div');
+  node.className = `floating-score ${kind}`;
+  node.textContent = text;
+  node.style.left = `${x}px`;
+  node.style.top = `${y}px`;
+  effectsLayer.appendChild(node);
+  setTimeout(() => node.remove(), 980);
+}
+
+function spawnConfettiBurst(x, y, count = 18, spread = 150, mode = 'celebrate') {
+  if (!effectsLayer) return;
+  for (let i = 0; i < count; i += 1) {
+    const bit = document.createElement('span');
+    bit.className = mode === 'splash' ? 'effect-bit splash' : 'effect-bit confetti';
+    const angle = randomBetween(0, Math.PI * 2);
+    const distance = randomBetween(spread * 0.38, spread);
+    const dx = Math.cos(angle) * distance;
+    const dy = Math.sin(angle) * distance;
+    const size = randomBetween(6, 14);
+    bit.style.left = `${x}px`;
+    bit.style.top = `${y}px`;
+    bit.style.width = `${size}px`;
+    bit.style.height = `${size * randomBetween(0.72, 1.22)}px`;
+    bit.style.background = EFFECT_COLORS[Math.floor(Math.random() * EFFECT_COLORS.length)];
+    bit.style.setProperty('--dx', `${dx}px`);
+    bit.style.setProperty('--dy', `${dy}px`);
+    bit.style.setProperty('--rot', `${randomBetween(-240, 240)}deg`);
+    bit.style.setProperty('--dur', `${randomBetween(620, 980)}ms`);
+    effectsLayer.appendChild(bit);
+    setTimeout(() => bit.remove(), 1200);
+  }
+}
+
+function spawnCoinBurst(x, y, count = 10, spread = 130) {
+  if (!effectsLayer) return;
+  for (let i = 0; i < count; i += 1) {
+    const coin = document.createElement('img');
+    const angle = randomBetween(-Math.PI * 0.95, -Math.PI * 0.05);
+    const distance = randomBetween(spread * 0.32, spread);
+    const dx = Math.cos(angle) * distance;
+    const dy = Math.sin(angle) * distance;
+    const size = randomBetween(14, 24);
+    coin.className = 'effect-coin';
+    coin.src = COIN_PARTICLE_ASSET;
+    coin.alt = '';
+    coin.style.left = `${x}px`;
+    coin.style.top = `${y}px`;
+    coin.style.width = `${size}px`;
+    coin.style.height = `${size}px`;
+    coin.style.setProperty('--dx', `${dx}px`);
+    coin.style.setProperty('--dy', `${dy}px`);
+    coin.style.setProperty('--rot', `${randomBetween(-180, 220)}deg`);
+    coin.style.setProperty('--dur', `${randomBetween(680, 1080)}ms`);
+    effectsLayer.appendChild(coin);
+    setTimeout(() => coin.remove(), 1300);
+  }
 }
 
 function waitEndingAuto(ms, runToken) {
@@ -492,6 +592,7 @@ function setDialogue(message, ms = 0) {
 }
 
 function updateHud() {
+  const deltaCoins = coins - previousCoins;
   if (coinsCount) coinsCount.textContent = String(coins);
 
   const level = Math.floor(bondXp / 100) + 1;
@@ -500,6 +601,24 @@ function updateHud() {
   if (bondLevel) bondLevel.textContent = String(level);
   if (bondFill) bondFill.style.width = `${progress}%`;
   if (chapterChip) chapterChip.textContent = `Chapter ${currentChapter} / ${totalChapters}`;
+
+  if (deltaCoins !== 0) {
+    const center = elementCenter(coinHudItem || coinsCount);
+    if (deltaCoins > 0) {
+      pulseClass(coinHudItem || coinsCount, 'coins-up', 520);
+      if (center) {
+        spawnCoinBurst(center.x, center.y, Math.min(14, 7 + Math.floor(deltaCoins / 20)));
+        spawnFloatingScore(`+${deltaCoins}`, center.x, center.y - 6, 'gain');
+      }
+    } else {
+      pulseClass(coinHudItem || coinsCount, 'coins-down', 520);
+      if (center) {
+        spawnFloatingScore(String(deltaCoins), center.x, center.y - 6, 'spent');
+      }
+    }
+  }
+
+  previousCoins = coins;
   renderHintUi();
 }
 
@@ -603,7 +722,6 @@ function renderStyleShop() {
 
     const owned = ownedStyles.includes(key);
     const active = selectedStyle === key;
-    const canBuy = coins >= info.cost;
 
     button.innerHTML = `<strong>${info.label}</strong><br /><span class="cost">${owned ? 'Owned' : `${info.cost} coins`}</span>`;
 
@@ -618,12 +736,18 @@ function renderStyleShop() {
         return;
       }
 
-      if (!canBuy) {
+      const enoughCoins = coins >= info.cost;
+      if (!enoughCoins) {
         setDialogue(`Need ${info.cost - coins} more coins for ${info.label}.`, 1800);
         return;
       }
 
       coins -= info.cost;
+      const styleCenter = elementCenter(button);
+      if (styleCenter) {
+        spawnCoinBurst(styleCenter.x, styleCenter.y, 8, 96);
+        spawnFloatingScore(`-${info.cost}`, styleCenter.x, styleCenter.y - 10, 'spent');
+      }
       ownedStyles.push(key);
       applyStyle(key);
       updateHud();
@@ -706,19 +830,19 @@ function renderHintUi() {
       hintToggleBtn.textContent = hintVisible ? 'Hide Hint' : 'Show Hint';
     } else {
       hintToggleBtn.disabled = !canAfford;
-      hintToggleBtn.textContent = `Unlock Hint (-${HINT_COIN_COST} coins)`;
+      hintToggleBtn.textContent = `Buy Bread Hint (-${HINT_COIN_COST} coins)`;
     }
   }
 
   if (hintStatus) {
     if (unlocked) {
       hintStatus.textContent = hintVisible
-        ? 'Hint unlocked for this challenge.'
-        : 'Hint unlocked. Toggle to view it again.';
+        ? 'Bread clue unlocked for this challenge.'
+        : 'Bread clue unlocked. Toggle to view it again.';
     } else if (canAfford) {
-      hintStatus.textContent = `Hint locked. Spend ${HINT_COIN_COST} coins to unlock this clue.`;
+      hintStatus.textContent = `Hint locked. Spend ${HINT_COIN_COST} coins for one bread clue.`;
     } else {
-      hintStatus.textContent = `Need ${Math.max(0, HINT_COIN_COST - coins)} more coins to unlock hint.`;
+      hintStatus.textContent = `Need ${Math.max(0, HINT_COIN_COST - coins)} more coins to buy a bread clue.`;
     }
   }
 }
@@ -760,6 +884,9 @@ function spawnValue() {
   valueEl.textContent = question.value;
 
   valueContainer.appendChild(valueEl);
+  requestAnimationFrame(() => {
+    valueEl.classList.add('is-ready');
+  });
 
   const areaRect = valueContainer.getBoundingClientRect();
   const left = clamp(areaRect.width * 0.16, 20, Math.max(20, areaRect.width - 260));
@@ -839,6 +966,12 @@ function finishChapter() {
 
   openOverlay(assessmentPanel);
   setDuckReaction('complete', 1200);
+  const chapterCenter = elementCenter(challengeZone || valueContainer);
+  if (chapterCenter) {
+    spawnConfettiBurst(chapterCenter.x, chapterCenter.y, 34, 220, 'celebrate');
+    spawnCoinBurst(chapterCenter.x, chapterCenter.y, 16, 170);
+    spawnFloatingScore(`+${earned}`, chapterCenter.x, chapterCenter.y - 18, 'gain');
+  }
   setDialogue(isFinalChapter
     ? 'Final chapter complete. Ending story is ready.'
     : 'Post assessment complete. Coins added to your bag!', 2400);
@@ -847,6 +980,7 @@ function finishChapter() {
 function handleDrop(droppedBox) {
   const expectedType = currentChapterData().questions[questionIndex].type;
   const droppedType = droppedBox.dataset.type;
+  const dropCenter = elementCenter(droppedBox);
 
   roundAttempts += 1;
 
@@ -856,6 +990,12 @@ function handleDrop(droppedBox) {
     showFeedback('good', droppedBox);
     setDuckReaction('good', 900);
     setDialogue('Great match. That type is correct!', 1400);
+    flashChallengeZone('good');
+    if (dropCenter) {
+      spawnConfettiBurst(dropCenter.x, dropCenter.y, 18, 140, 'celebrate');
+      spawnCoinBurst(dropCenter.x, dropCenter.y, 6, 96);
+    }
+    if (activeValue) pulseClass(activeValue, 'value-win', 460);
 
     questionIndex += 1;
 
@@ -870,6 +1010,11 @@ function handleDrop(droppedBox) {
     showFeedback('bad', droppedBox);
     setDuckReaction('bad', 850);
     setDialogue('Close. Read the literal carefully and try again.', 1300);
+    flashChallengeZone('bad');
+    if (dropCenter) {
+      spawnConfettiBurst(dropCenter.x, dropCenter.y, 14, 120, 'splash');
+    }
+    if (activeValue) pulseClass(activeValue, 'value-shake', 500);
     spawnValue();
   }
 
@@ -1138,7 +1283,7 @@ if (hintToggleBtn) {
 
     if (!unlocked) {
       if (coins < HINT_COIN_COST) {
-        setDialogue(`Need ${HINT_COIN_COST - coins} more coins to unlock hint.`, 1400);
+        setDialogue(`Need ${HINT_COIN_COST - coins} more coins to buy bread hint.`, 1400);
         renderHintUi();
         return;
       }
@@ -1146,7 +1291,12 @@ if (hintToggleBtn) {
       coins -= HINT_COIN_COST;
       unlockedHintKeys.add(key);
       hintVisible = true;
-      setDialogue('Hint unlocked for this challenge.', 1200);
+      const hintCenter = elementCenter(hintToggleBtn);
+      if (hintCenter) {
+        spawnCoinBurst(hintCenter.x, hintCenter.y, 8, 95);
+        spawnFloatingScore(`-${HINT_COIN_COST}`, hintCenter.x, hintCenter.y - 10, 'spent');
+      }
+      setDialogue('Bread clue unlocked for this challenge.', 1200);
       updateHud();
       persistState();
     } else {
