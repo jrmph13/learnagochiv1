@@ -34,6 +34,7 @@ const closeJournal = document.getElementById('close-journal');
 const shopToggle = document.getElementById('shop-toggle');
 const shopPanel = document.getElementById('shop-panel');
 const closeShop = document.getElementById('close-shop');
+const shopNotice = document.getElementById('shop-notice');
 const homeButton = document.getElementById('home-button');
 
 const chapterButtons = document.getElementById('chapter-buttons');
@@ -976,6 +977,27 @@ function applyStyle(styleKey) {
   persistState();
 }
 
+let shopNoticeTimer = null;
+function showShopNotice(message, type = 'error', duration = 2000) {
+  if (!shopNotice) return;
+  shopNotice.textContent = message;
+  shopNotice.classList.remove('error', 'success');
+  shopNotice.classList.add('show', type);
+
+  if (shopNoticeTimer) {
+    clearTimeout(shopNoticeTimer);
+    shopNoticeTimer = null;
+  }
+
+  if (duration > 0) {
+    shopNoticeTimer = setTimeout(() => {
+      shopNotice.classList.remove('show', 'error', 'success');
+      shopNotice.textContent = '';
+      shopNoticeTimer = null;
+    }, duration);
+  }
+}
+
 function renderStyleButton(key, info) {
   const button = document.createElement('button');
   button.type = 'button';
@@ -999,7 +1021,10 @@ function renderStyleButton(key, info) {
 
     const enoughCoins = coins >= info.cost;
     if (!enoughCoins) {
-      setDialogue(`Need ${info.cost - coins} more coins for ${info.label}.`, 1800);
+      const lacking = info.cost - coins;
+      showShopNotice(`Insufficient coins: need ${lacking} more for ${info.label}.`, 'error', 2200);
+      setDialogue(`Need ${lacking} more coins for ${info.label}.`, 1800);
+      playSfx('wrong', { rate: 0.95, boost: 0.75 });
       return;
     }
 
@@ -1015,6 +1040,7 @@ function renderStyleButton(key, info) {
     updateHud();
     renderStyleShop();
     persistState();
+    showShopNotice(`Unlocked ${info.label}!`, 'success', 1400);
     setDialogue(`Unlocked ${info.label}!`, 1800);
   });
 

@@ -318,6 +318,7 @@ body::before {
   display: grid;
   gap: 10px;
   background: linear-gradient(#efe4cd, #e6d9bd);
+  color: #2a2117;
 }
 
 .shop-head {
@@ -329,12 +330,39 @@ body::before {
   margin: 0;
   font-size: clamp(18px, 1.2vw, 24px);
   line-height: 1.05;
+  color: #2e251a;
 }
 
 .shop-subtitle {
   margin: 0;
   font-size: clamp(12px, 0.88vw, 15px);
-  color: rgba(247, 243, 231, 0.82);
+  color: #6f5b46;
+}
+
+.shop-notice {
+  margin: 4px 0 0;
+  display: none;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  font-size: clamp(12px, 0.86vw, 15px);
+  line-height: 1.2;
+}
+
+.shop-notice.show {
+  display: block;
+}
+
+.shop-notice.error {
+  background: rgba(166, 41, 41, 0.14);
+  border-color: rgba(166, 41, 41, 0.38);
+  color: #7a1616;
+}
+
+.shop-notice.success {
+  background: rgba(64, 125, 56, 0.14);
+  border-color: rgba(64, 125, 56, 0.4);
+  color: #275b20;
 }
 
 .style-shop {
@@ -356,7 +384,7 @@ body::before {
   margin: 0;
   font-size: clamp(13px, 0.95vw, 16px);
   line-height: 1;
-  color: rgba(246, 242, 228, 0.88);
+  color: #8a735b;
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
@@ -401,7 +429,8 @@ body::before {
 }
 
 .style-btn .cost {
-  opacity: 0.75;
+  opacity: 0.95;
+  color: #5f4e3d;
   font-size: 0.88em;
 }
 
@@ -410,7 +439,7 @@ body::before {
 }
 
 .style-btn.locked {
-  opacity: 0.68;
+  opacity: 0.82;
 }
 
 #challenge-zone {
