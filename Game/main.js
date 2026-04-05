@@ -1551,9 +1551,9 @@ function confirmExitToHome(mode = 'game') {
 
 function navigateToHome() {
   const tryFallbackHome = () => {
-    const onHomePath = window.location.pathname === '/' || /\/index\.html$/i.test(window.location.pathname);
+    const onHomePath = /\/home\/?$/i.test(window.location.pathname) || /\/index\.html$/i.test(window.location.pathname);
     if (!onHomePath) {
-      window.location.replace('/');
+      window.location.replace('/home');
     }
   };
 
@@ -1563,7 +1563,7 @@ function navigateToHome() {
     return;
   }
 
-  window.location.replace('/');
+  window.location.replace('/home');
 }
 
 function openCinematic() {

@@ -27,7 +27,7 @@ const startButton = document.getElementById('start-button');
 const exitButton = document.getElementById('exit-button');
 const googleSignInButton = document.getElementById('google-signin');
 
-const GAME_START_URL = '/?play=1';
+const GAME_START_URL = '/';
 const EXIT_REDIRECT_URL = 'https://www.google.com/';
 const INTRO_SEEN_KEY = 'learnagochiIntroSeen';
 const UI_CLICK_SFX_URL = 'assets/sound/mysfx_click.mp3';

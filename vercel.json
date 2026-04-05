@@ -5,31 +5,19 @@
   "trailingSlash": false,
   "redirects": [
     {
-      "source": "/index.html",
-      "destination": "/",
-      "permanent": true
-    },
-    {
       "source": "/Game/index.html",
-      "destination": "/?play=1",
+      "destination": "/",
       "permanent": true
     }
   ],
   "rewrites": [
     {
-      "source": "/",
-      "has": [
-        {
-          "type": "query",
-          "key": "play",
-          "value": "1"
-        }
-      ],
-      "destination": "/Game/index.html"
+      "source": "/home",
+      "destination": "/index.html"
     },
     {
       "source": "/",
-      "destination": "/index.html"
+      "destination": "/Game/index.html"
     }
   ]
 }
