@@ -99,8 +99,8 @@ const characterShopGroups = [
 ];
 
 const duckReactions = {
-  good: '../assets/characters/duck-stretch.png',
-  bad: '../assets/characters/duck-idle.png',
+  good: ['../assets/characters/duck-stretch.png', '../assets/characters/duck-toast.png'],
+  bad: '../assets/characters/duck-splash.png',
   complete: '../assets/characters/duck-toast.png'
 };
 
@@ -633,7 +633,16 @@ function setDuckReaction(kind, duration = 900) {
   }
 
   duckCharacter.classList.remove('react-good', 'react-bad', 'react-complete');
-  duckCharacter.src = duckReactions[kind];
+  let reactionSprite = duckReactions[kind];
+  if (Array.isArray(reactionSprite)) {
+    const currentSrc = duckCharacter.src || '';
+    const nextSprite = reactionSprite.find((candidate) => {
+      const fileName = candidate.split('/').pop();
+      return fileName && !currentSrc.includes(fileName);
+    });
+    reactionSprite = nextSprite || reactionSprite[0];
+  }
+  duckCharacter.src = reactionSprite;
   duckCharacter.classList.add(`react-${kind}`);
 
   reactionTimer = setTimeout(() => {
