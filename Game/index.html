@@ -26,6 +26,7 @@
     <div class="hud-item">Coins: <span id="coins-count">0</span></div>
     <div class="hud-item">Bond Lv. <span id="bond-level">1</span></div>
     <div class="bond-meter"><div id="bond-fill"></div></div>
+    <div class="hud-item">Lives: <span id="lives-track" class="lives-track"></span></div>
     <div class="hud-item" id="chapter-chip">Chapter 1 / 5</div>
   </section>
 
@@ -37,7 +38,13 @@
       <p id="duck-name">Bread Duck</p>
       <p id="duck-dialogue" class="duck-dialogue">You saved me. Let us learn together, one line at a time.</p>
 
-      <div id="style-shop" class="style-shop"></div>
+      <section class="duck-shop-panel" aria-label="Character shop">
+        <div class="shop-head">
+          <h2 class="shop-title">Character Shop</h2>
+          <p class="shop-subtitle">Unlock and switch your duck styles.</p>
+        </div>
+        <div id="style-shop" class="style-shop"></div>
+      </section>
     </section>
 
     <section id="challenge-zone" class="panel">
@@ -56,6 +63,7 @@
       </div>
       <p id="programming-tag">Hints are hidden. Spend 100 coins to buy one bread clue for this challenge.</p>
 
+      <div id="mode-panel" class="mode-panel" hidden></div>
       <div id="value-container"></div>
 
       <div id="box-container">
@@ -112,14 +120,18 @@
           <h3>Levels / Chapters</h3>
           <ul>
             <li>Total of <strong>5 chapters</strong>: Pond Basics, Variable Values, Logic Practice, Festival Showcase, Final Mastery.</li>
-            <li>Each chapter has its own animated scene, story hook, and challenge set.</li>
+            <li>Chapter 1-2: classify literals using drag-to-box.</li>
+            <li>Chapter 3: find the code error line.</li>
+            <li>Chapter 4: fill the missing code correctly.</li>
+            <li>Chapter 5: final mixed coding decisions.</li>
             <li>Chapter 5 is the final mastery run, then the ending story (Scene 13-16 + The End) appears.</li>
           </ul>
         </article>
         <article>
           <h3>Engagement Elements (Why Players Keep Playing)</h3>
           <ul>
-            <li>Drag-and-drop coding loop with instant feedback and animated duck reactions.</li>
+            <li>Multiple chapter modes to avoid repetitive gameplay loops.</li>
+            <li>3-life system per chapter raises focus and challenge.</li>
             <li>Chapter unlock flow creates progression and curiosity.</li>
             <li>Coins/points and dress-up customization create long-term goals.</li>
           </ul>
@@ -138,6 +150,8 @@
             <li>Based on mastery learning: repeat, get feedback, improve, then progress.</li>
             <li>Designed for beginner learners/target players who need guided and playful practice.</li>
             <li>Combines narrative care-taking + coding practice to make learning memorable.</li>
+            <li>Tracks motivation dimensions for MAWD SHS learners: intrinsic, extrinsic, and engagement.</li>
+            <li>Supports pre/post comparison with chapter performance, lives used, and reward behavior.</li>
           </ul>
         </article>
       </div>

@@ -1,5 +1,7 @@
+const boxContainer = document.getElementById('box-container');
 const boxes = Array.from(document.querySelectorAll('#box-container .box'));
 const valueContainer = document.getElementById('value-container');
+const modePanel = document.getElementById('mode-panel');
 const duckCharacter = document.getElementById('duck-character');
 const duckName = document.getElementById('duck-name');
 const duckDialogue = document.getElementById('duck-dialogue');
@@ -20,6 +22,7 @@ const effectsLayer = document.getElementById('effects-layer');
 const coinsCount = document.getElementById('coins-count');
 const bondLevel = document.getElementById('bond-level');
 const bondFill = document.getElementById('bond-fill');
+const livesTrack = document.getElementById('lives-track');
 const coinHudItem = coinsCount ? coinsCount.closest('.hud-item') : null;
 
 const settingsToggle = document.getElementById('settings-toggle');
@@ -69,22 +72,39 @@ const feedbackIcons = {
 };
 
 const wardrobeStyles = {
-  idle: { label: 'Calm Look', cost: 0, sprite: '../assets/characters/duck-idle.png' },
-  stretch: { label: 'Stretch Charm', cost: 30, sprite: '../assets/characters/duck-stretch.png' },
-  splash: { label: 'Splash Hero', cost: 60, sprite: '../assets/characters/duck-splash.png' },
-  toast: { label: 'Toast Armor', cost: 90, sprite: '../assets/characters/duck-toast.png' }
+  idle: { label: 'starter-duck', cost: 0, group: 'starter', order: 1, sprite: '../assets/characters/duck-idle.png', icon: '../assets/characters/duck-idle.png' },
+  bread_duck: { label: 'bread-duck', cost: 25, group: 'starter', order: 2, sprite: '../assets/characters/bread.png', icon: '../assets/characters/bread.png' },
+  brainy_duck: { label: 'brainy-duck', cost: 35, group: 'school', order: 3, sprite: '../assets/characters/brainy-duck.png', icon: '../assets/characters/brainy-duck.png' },
+  business_duck: { label: 'business-duck', cost: 45, group: 'school', order: 4, sprite: '../assets/characters/business.png', icon: '../assets/characters/business.png' },
+  dj_duck: { label: 'dj-duck', cost: 55, group: 'school', order: 5, sprite: '../assets/characters/dj.png', icon: '../assets/characters/dj.png' },
+  cook_duck: { label: 'cook-duck', cost: 60, group: 'school', order: 6, sprite: '../assets/characters/cook.png', icon: '../assets/characters/cook.png' },
+  ninja_duck: { label: 'ninja-duck', cost: 70, group: 'battle', order: 7, sprite: '../assets/characters/ninja.png', icon: '../assets/characters/ninja.png' },
+  knight_duck: { label: 'knight-duck', cost: 85, group: 'battle', order: 8, sprite: '../assets/characters/knight.png', icon: '../assets/characters/knight.png' },
+  princess_duck: { label: 'princess-duck', cost: 95, group: 'battle', order: 9, sprite: '../assets/characters/princess.png', icon: '../assets/characters/princess.png' },
+  hacker_duck: { label: 'hacker-duck', cost: 110, group: 'legend', order: 10, sprite: '../assets/characters/hacker.png', icon: '../assets/characters/hacker.png' },
+  hero_duck: { label: 'hero-duck', cost: 125, group: 'legend', order: 11, sprite: '../assets/characters/hero-splash.png', icon: '../assets/characters/hero-splash.png' },
+  toast_duck: { label: 'toast-duck', cost: 135, group: 'legend', order: 12, sprite: '../assets/characters/duck-toast.png', icon: '../assets/characters/duck-toast.png' },
+  alien_duck: { label: 'alien-duck', cost: 150, group: 'legend', order: 13, sprite: '../assets/characters/alien.png', icon: '../assets/characters/alien.png' }
 };
+
+const characterShopGroups = [
+  { key: 'starter', label: 'Starter Ducks' },
+  { key: 'school', label: 'School Ducks' },
+  { key: 'battle', label: 'Battle Ducks' },
+  { key: 'legend', label: 'Legend Ducks' }
+];
 
 const duckReactions = {
   good: '../assets/characters/duck-stretch.png',
-  bad: '../assets/characters/duck-splash.png',
+  bad: '../assets/characters/duck-idle.png',
   complete: '../assets/characters/duck-toast.png'
 };
 
 const chapters = {
   1: {
+    mode: 'box',
     title: 'Chapter 1: Pond Basics',
-    cue: 'Let us begin with core literals: string, bool, and int.',
+    cue: 'Drag each literal into the correct type box.',
     storyHook: 'Story: You dry Eppy beside the pond while learning first coding values.',
     learningGoal: 'Goal: Classify each basic literal correctly.',
     sceneAsset: '../assets/scenes/scene-ch1-rain.svg',
@@ -95,21 +115,22 @@ const chapters = {
     ],
     prepLabel: 'Preparing literal drills...',
     questions: [
-      { value: '"duck"', type: 'string', hint: 'Quoted text is string.' },
-      { value: '15', type: 'int', hint: 'Whole number is int.' },
-      { value: 'true', type: 'bool', hint: 'Logical true is bool.' },
-      { value: '"pond"', type: 'string', hint: 'Word in quotes is string.' },
-      { value: '-3', type: 'int', hint: 'Negative whole number is int.' },
-      { value: 'false', type: 'bool', hint: 'Logical false is bool.' },
-      { value: '108', type: 'int', hint: 'Still int without quotes.' },
-      { value: '"Eppy"', type: 'string', hint: 'Name in quotes is string.' },
-      { value: '0', type: 'int', hint: 'Zero is int.' },
-      { value: '"learn"', type: 'string', hint: 'Quoted verb is string.' }
+      { value: '"duck"', type: 'string' },
+      { value: '15', type: 'int' },
+      { value: 'true', type: 'bool' },
+      { value: '"pond"', type: 'string' },
+      { value: '-3', type: 'int' },
+      { value: 'false', type: 'bool' },
+      { value: '108', type: 'int' },
+      { value: '"Eppy"', type: 'string' },
+      { value: '0', type: 'int' },
+      { value: '"learn"', type: 'string' }
     ]
   },
   2: {
+    mode: 'box',
     title: 'Chapter 2: Variable Values',
-    cue: 'Variables hold values. Read the literal carefully each time.',
+    cue: 'Continue sorting variable-like literals by type.',
     storyHook: 'Story: Eppy follows your notes as you label progress and inventory values.',
     learningGoal: 'Goal: Sort variable-like values into the correct type.',
     sceneAsset: '../assets/scenes/scene-ch2-study.svg',
@@ -120,101 +141,85 @@ const chapters = {
     ],
     prepLabel: 'Preparing variable drills...',
     questions: [
-      { value: '"coins"', type: 'string', hint: 'Quoted label is string.' },
-      { value: '256', type: 'int', hint: 'No quotes and whole number means int.' },
-      { value: '"player_name"', type: 'string', hint: 'Symbols inside quotes remain string.' },
-      { value: 'true', type: 'bool', hint: 'Boolean literal is bool.' },
-      { value: '-120', type: 'int', hint: 'Negative whole value is int.' },
-      { value: '"level_up"', type: 'string', hint: 'Snake-case text in quotes is string.' },
-      { value: 'false', type: 'bool', hint: 'Boolean literal is bool.' },
-      { value: '42', type: 'int', hint: 'No decimal and no quotes = int.' },
-      { value: '"mission-2"', type: 'string', hint: 'Hyphen text in quotes is string.' },
-      { value: '730', type: 'int', hint: 'Whole number literal is int.' }
+      { value: '"coins"', type: 'string' },
+      { value: '256', type: 'int' },
+      { value: '"player_name"', type: 'string' },
+      { value: 'true', type: 'bool' },
+      { value: '-120', type: 'int' },
+      { value: '"level_up"', type: 'string' },
+      { value: 'false', type: 'bool' },
+      { value: '42', type: 'int' },
+      { value: '"mission-2"', type: 'string' },
+      { value: '730', type: 'int' }
     ]
   },
   3: {
-    title: 'Chapter 3: Logic Practice',
-    cue: 'Some values look similar. Focus on quotes and exact literal form.',
-    storyHook: 'Story: At sunrise, Eppy starts a logic-check mission with tricky look-alikes.',
-    learningGoal: 'Goal: Distinguish bool/int from string look-alikes.',
+    mode: 'find_error',
+    title: 'Chapter 3: Find the Error',
+    cue: 'Tap the line that contains the type error.',
+    storyHook: 'Story: Eppy checks your code and asks you to find broken lines.',
+    learningGoal: 'Goal: Detect incorrect value types inside small code snippets.',
     sceneAsset: '../assets/scenes/scene-ch3-sunrise.svg',
     sceneFx: 'sunrise',
     cinematicLines: [
-      'Sunlight reaches the pond. Logic mission starts.',
-      'Your duck trusts you. Keep every type check accurate.'
+      'Sunlight reaches the pond. Debug mission starts.',
+      'Find the wrong line before Eppy gets confused.'
     ],
-    prepLabel: 'Preparing logic drills...',
+    prepLabel: 'Preparing debug drills...',
     questions: [
-      { value: '"true"', type: 'string', hint: 'Quoted value is string, even if word is true.' },
-      { value: 'true', type: 'bool', hint: 'Unquoted true is bool.' },
-      { value: '"0"', type: 'string', hint: 'Quoted zero is string.' },
-      { value: '0', type: 'int', hint: 'Unquoted zero is int.' },
-      { value: '"-12"', type: 'string', hint: 'Quoted negative number is string.' },
-      { value: '-12', type: 'int', hint: 'Unquoted negative whole number is int.' },
-      { value: '"false"', type: 'string', hint: 'Quoted false is string.' },
-      { value: 'false', type: 'bool', hint: 'Unquoted false is bool.' },
-      { value: '"100"', type: 'string', hint: 'Quoted number stays string.' },
-      { value: '100', type: 'int', hint: 'Unquoted whole number is int.' }
+      { prompt: 'Find the type error. Variable target: bool.', lines: ['const isReady = "true";', 'const points = 25;', 'const mascot = "Eppy";'], answerIndex: 0, hintText: 'Look for a boolean word wrapped in quotes.' },
+      { prompt: 'Find the type error. Variable target: int.', lines: ['let lives = "3";', 'let passed = true;', 'let levelName = "Pond";'], answerIndex: 0, hintText: 'An int should be a plain whole number.' },
+      { prompt: 'Find the type error. Variable target: string.', lines: ['const chapterName = 4;', 'const accuracy = 98;', 'const enabled = false;'], answerIndex: 0, hintText: 'A string label should use quote delimiters.' },
+      { prompt: 'Find the type error. Variable target: bool.', lines: ['let hasBadge = true;', 'let hasHint = "false";', 'let coins = 110;'], answerIndex: 1, hintText: 'Boolean values should not be quoted.' },
+      { prompt: 'Find the type error. Variable target: int.', lines: ['const totalCoins = 540;', 'const bestScore = "100";', 'const isCalm = true;'], answerIndex: 1, hintText: 'Quoted digits are not int literals.' },
+      { prompt: 'Find the type error. Variable target: string.', lines: ['let duckName = "Eppy";', 'let chapterCode = 503;', 'let chapterGoal = "Debug";'], answerIndex: 1, hintText: 'Name-like values should be textual labels.' }
     ]
   },
   4: {
-    title: 'Chapter 4: Festival Showcase',
-    cue: 'Festival day: apply everything with calm and accuracy.',
-    storyHook: 'Story: The pond festival starts, and Eppy joins your coding showcase.',
-    learningGoal: 'Goal: Solve a mixed set without relying on repeated patterns.',
+    mode: 'fill_missing',
+    title: 'Chapter 4: Fill the Missing Code',
+    cue: 'Choose the best token to complete the code.',
+    storyHook: 'Story: Festival coding booth opens and missing code must be completed fast.',
+    learningGoal: 'Goal: Fill blanks with values that match the expected type.',
     sceneAsset: '../assets/scenes/scene-ch4-festival.svg',
     sceneFx: 'festival',
     cinematicLines: [
       'Lantern lights glow over the pond as the showcase begins.',
-      'Eppy greets the crowd while you solve mixed value checks.'
+      'Complete each missing value to keep the code running.'
     ],
-    prepLabel: 'Preparing festival showcase...',
+    prepLabel: 'Preparing fill-in drills...',
     questions: [
-      { value: '"festival_badge"', type: 'string', hint: 'Quoted text is string.' },
-      { value: '2048', type: 'int', hint: 'Whole number is int.' },
-      { value: 'true', type: 'bool', hint: 'Unquoted true is bool.' },
-      { value: '"score:90"', type: 'string', hint: 'Colon inside quotes remains string.' },
-      { value: '-1', type: 'int', hint: 'Negative whole number is int.' },
-      { value: 'false', type: 'bool', hint: 'Unquoted false is bool.' },
-      { value: '"duckWins"', type: 'string', hint: 'Variable-like text in quotes is string.' },
-      { value: '315', type: 'int', hint: 'Still int without quotes.' },
-      { value: '"chapter4"', type: 'string', hint: 'Quoted label is string.' },
-      { value: '88', type: 'int', hint: 'Whole number is int.' },
-      { value: '"logic_passed"', type: 'string', hint: 'Quoted underscored text is string.' },
-      { value: '4096', type: 'int', hint: 'Large whole number is int.' }
+      { prompt: 'Fill the blank so coins is int.', snippet: 'let coins = ___;', choices: ['"120"', '120', 'false'], answerIndex: 1, hintText: 'int values are whole numbers with no quotes.' },
+      { prompt: 'Fill the blank so isReady is bool.', snippet: 'const isReady = ___;', choices: ['"true"', '1', 'true'], answerIndex: 2, hintText: 'Boolean literals are true/false without quotes.' },
+      { prompt: 'Fill the blank so playerName is string.', snippet: 'const playerName = ___;', choices: ['"Jham"', 'Jham', '0'], answerIndex: 0, hintText: 'Strings are wrapped by paired quotes.' },
+      { prompt: 'Fill the blank so hasBread is bool.', snippet: 'let hasBread = ___;', choices: ['false', '"false"', '"0"'], answerIndex: 0, hintText: 'Pick the unquoted logic literal.' },
+      { prompt: 'Fill the blank so chapterNumber is int.', snippet: 'const chapterNumber = ___;', choices: ['"4"', '4', 'true'], answerIndex: 1, hintText: 'An int is numeric and unquoted.' },
+      { prompt: 'Fill the blank so missionTag is string.', snippet: 'let missionTag = ___;', choices: ['"pond_rescue"', 'pond_rescue', '25'], answerIndex: 0, hintText: 'Labels in code should be quoted strings.' }
     ]
   },
   5: {
-    title: 'Chapter 5: Final Mastery',
-    cue: 'Final chapter: prove you understand literals in real coding-like values.',
-    storyHook: 'Story: Eppy now trusts your guidance. One last mastery run before The End.',
-    learningGoal: 'Goal: Clear the final mastery set using careful reading and logic.',
+    mode: 'quick_pick',
+    title: 'Chapter 5: Final Mixed Mission',
+    cue: 'Choose the best code decision each round.',
+    storyHook: 'Story: Final review with Eppy before the ending story.',
+    learningGoal: 'Goal: Make accurate mixed decisions across string, bool, and int.',
     sceneAsset: '../assets/scenes/scene-ch4-festival.svg',
     sceneFx: 'sunrise',
     cinematicLines: [
       'Eppy opens the final notebook page marked: Mastery Check.',
-      'This is your last chapter before The End.'
+      'Final mixed decisions. Stay calm and precise.'
     ],
-    prepLabel: 'Preparing final mastery...',
+    prepLabel: 'Preparing final mixed mission...',
     questions: [
-      { value: '"start_game"', type: 'string', hint: 'Quoted command-like text is string.' },
-      { value: '512', type: 'int', hint: 'Whole number is int.' },
-      { value: 'false', type: 'bool', hint: 'Unquoted false is bool.' },
-      { value: '"512"', type: 'string', hint: 'Quoted number is string.' },
-      { value: '-204', type: 'int', hint: 'Negative whole number is int.' },
-      { value: 'true', type: 'bool', hint: 'Unquoted true is bool.' },
-      { value: '"isReady"', type: 'string', hint: 'Name in quotes is string.' },
-      { value: '73', type: 'int', hint: 'No quotes and whole number means int.' },
-      { value: '"false"', type: 'string', hint: 'Quoted false is string.' },
-      { value: '0', type: 'int', hint: 'Zero is int.' },
-      { value: '"pond level 5"', type: 'string', hint: 'Sentence in quotes is string.' },
-      { value: '9999', type: 'int', hint: 'Whole number is int.' },
-      { value: '"true"', type: 'string', hint: 'Quoted true is string.' },
-      { value: 'false', type: 'bool', hint: 'Literal false is bool.' }
+      { prompt: 'Which line correctly stores bool passed?', choices: ['const passed = "true";', 'const passed = true;', 'const passed = 1;'], answerIndex: 1, hintText: 'Choose the unquoted boolean literal.' },
+      { prompt: 'Which line correctly stores int score?', choices: ['let score = "90";', 'let score = 90;', 'let score = false;'], answerIndex: 1, hintText: 'int values are whole numbers with no quote wrapper.' },
+      { prompt: 'Which line correctly stores string duckName?', choices: ['let duckName = Eppy;', 'let duckName = 0;', 'let duckName = "Eppy";'], answerIndex: 2, hintText: 'String names must be quoted.' },
+      { prompt: 'Which value should replace ___ in: let hintCost = ___;', choices: ['100', '"100"', 'true'], answerIndex: 0, hintText: 'Currency count should be numeric int.' },
+      { prompt: 'Which declaration is valid bool for hasLives?', choices: ['const hasLives = "false";', 'const hasLives = false;', 'const hasLives = "0";'], answerIndex: 1, hintText: 'Pick the unquoted logical value.' },
+      { prompt: 'Which declaration is valid string for chapterTitle?', choices: ['const chapterTitle = "Final Mission";', 'const chapterTitle = Final Mission;', 'const chapterTitle = 5;'], answerIndex: 0, hintText: 'Text labels belong inside quotes.' }
     ]
   }
 };
-
 const endingScenes = [
   {
     scene: 13,
@@ -269,6 +274,9 @@ let questionIndex = 0;
 let roundCorrect = 0;
 let roundAttempts = 0;
 let chapterCompleted = false;
+let chapterFailed = false;
+let lives = 3;
+let answerLocked = false;
 let activeValue = null;
 let dragState = null;
 let dialogueTimer = null;
@@ -297,6 +305,7 @@ const COIN_PARTICLE_ASSET = '../assets/coin.svg';
 const HINT_COIN_COST = 100;
 const DEFAULT_HINT_TEXT = 'Hints are hidden. Spend 100 coins to buy one bread clue for this challenge.';
 const EFFECT_COLORS = ['#f8d25b', '#ff8a78', '#8fd9ff', '#9fe39b', '#f4e9d1', '#ffc17e'];
+const MAX_LIVES = 3;
 const SFX_LIBRARY = {
   correct: '../assets/sound/mysfx_game_show_correct.mp3',
   wrong: '../assets/sound/mysfx_duolingo_wrong.mp3',
@@ -646,6 +655,205 @@ function setDialogue(message, ms = 0) {
   }
 }
 
+function renderLives() {
+  if (!livesTrack) return;
+  livesTrack.innerHTML = '';
+  for (let i = 0; i < MAX_LIVES; i += 1) {
+    const heart = document.createElement('img');
+    heart.src = '../assets/heart.png';
+    heart.alt = i < lives ? 'Life remaining' : 'Life lost';
+    heart.className = `heart-icon ${i < lives ? 'full' : 'lost'}`;
+    livesTrack.appendChild(heart);
+  }
+}
+
+function getQuestionMode() {
+  return currentChapterData().mode || 'box';
+}
+
+function getQuestionHint(question) {
+  if (!question) return '';
+  if (question.hintText) return question.hintText;
+  if (Object.prototype.hasOwnProperty.call(question, 'value')) {
+    return buildNonRevealingHint(question.value);
+  }
+  return 'Focus on exact notation, delimiters, and expected type.';
+}
+
+function clearActiveQuestionViews() {
+  if (activeValue) {
+    activeValue.remove();
+    activeValue = null;
+  }
+  if (modePanel) {
+    modePanel.innerHTML = '';
+  }
+}
+
+function setInteractionMode(mode) {
+  const isBox = mode === 'box';
+  if (modePanel) {
+    modePanel.hidden = isBox;
+  }
+  if (valueContainer) {
+    valueContainer.style.display = isBox ? 'block' : 'none';
+  }
+  if (boxContainer) {
+    boxContainer.style.display = isBox ? 'flex' : 'none';
+  }
+}
+
+function loseLife() {
+  lives = Math.max(0, lives - 1);
+  if (lives <= 0) {
+    return true;
+  }
+  return false;
+}
+
+function failChapter() {
+  chapterCompleted = true;
+  chapterFailed = true;
+  answerLocked = true;
+  clearActiveQuestionViews();
+  updateHud();
+  persistState();
+
+  const total = currentChapterData().questions.length;
+  if (assessmentSummary) {
+    assessmentSummary.textContent = `No lives left. You solved ${roundCorrect}/${total}. Retry this chapter to improve motivation and mastery.`;
+  }
+  if (assessmentScore) {
+    assessmentScore.textContent = `${Math.round((roundCorrect / Math.max(roundAttempts, 1)) * 100)}%`;
+  }
+  if (assessmentEarned) assessmentEarned.textContent = '0';
+  if (assessmentTotal) assessmentTotal.textContent = String(coins);
+  if (continueBtn) continueBtn.textContent = 'Retry Chapter';
+
+  openOverlay(assessmentPanel);
+  playSfx('wrong', { rate: 0.9, boost: 1 });
+  setDuckReaction('bad', 1100);
+  setDialogue('Eppy needs a reset. Retry this chapter with focus.', 2200);
+}
+
+function renderModeQuestion(question) {
+  if (!modePanel || !question) return;
+  const mode = getQuestionMode();
+  modePanel.innerHTML = '';
+
+  const title = document.createElement('p');
+  title.className = 'mode-title';
+  title.textContent = question.prompt || 'Solve this coding challenge.';
+  modePanel.appendChild(title);
+
+  if (mode === 'find_error') {
+    const list = document.createElement('div');
+    list.className = 'mode-code-list';
+    question.lines.forEach((line, index) => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'mode-option mode-code-line';
+      button.textContent = line;
+      button.addEventListener('click', () => {
+        if (answerLocked || chapterCompleted || cinematicPlaying) return;
+        answerLocked = true;
+        const ok = index === question.answerIndex;
+        resolveAnswer(ok, button);
+      });
+      list.appendChild(button);
+    });
+    modePanel.appendChild(list);
+    return;
+  }
+
+  if (mode === 'fill_missing') {
+    const snippet = document.createElement('pre');
+    snippet.className = 'mode-snippet';
+    snippet.textContent = question.snippet;
+    modePanel.appendChild(snippet);
+  }
+
+  const options = document.createElement('div');
+  options.className = 'mode-options-grid';
+  question.choices.forEach((choice, index) => {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'mode-option mode-choice';
+    button.textContent = choice;
+    button.addEventListener('click', () => {
+      if (answerLocked || chapterCompleted || cinematicPlaying) return;
+      answerLocked = true;
+      const ok = index === question.answerIndex;
+      resolveAnswer(ok, button);
+    });
+    options.appendChild(button);
+  });
+  modePanel.appendChild(options);
+}
+
+function resolveAnswer(isCorrect, feedbackTarget) {
+  roundAttempts += 1;
+
+  if (isCorrect) {
+    roundCorrect += 1;
+    bondXp += 12;
+    playSfx('correct', { rate: 1.04, boost: 0.9 });
+    if (feedbackTarget) showFeedback('good', feedbackTarget);
+    setDuckReaction('good', 900);
+    setDialogue('Great match. That is correct.', 1300);
+    flashChallengeZone('good');
+
+    const center = elementCenter(feedbackTarget || challengeZone);
+    if (center) {
+      spawnConfettiBurst(center.x, center.y, 18, 140, 'celebrate');
+      spawnCoinBurst(center.x, center.y, 6, 96);
+    }
+
+    if (activeValue) pulseClass(activeValue, 'value-win', 460);
+    questionIndex += 1;
+
+    if (questionIndex >= currentChapterData().questions.length) {
+      finishChapter();
+      return;
+    }
+
+    updateHud();
+    persistState();
+    setTimeout(() => {
+      answerLocked = false;
+      spawnValue();
+    }, 420);
+    return;
+  }
+
+  bondXp += 3;
+  playSfx('wrong', { rate: 0.97, boost: 0.95 });
+  if (feedbackTarget) showFeedback('bad', feedbackTarget);
+  setDuckReaction('bad', 850);
+  setDialogue('Wrong answer. Check notation and expected type.', 1300);
+  flashChallengeZone('bad');
+
+  const center = elementCenter(feedbackTarget || challengeZone);
+  if (center) {
+    spawnConfettiBurst(center.x, center.y, 14, 120, 'splash');
+  }
+
+  if (activeValue) pulseClass(activeValue, 'value-shake', 500);
+
+  const noLives = loseLife();
+  updateHud();
+  persistState();
+
+  if (noLives) {
+    failChapter();
+    return;
+  }
+
+  setTimeout(() => {
+    answerLocked = false;
+    spawnValue();
+  }, 380);
+}
 function updateHud() {
   const deltaCoins = coins - previousCoins;
   if (coinsCount) coinsCount.textContent = String(coins);
@@ -656,6 +864,7 @@ function updateHud() {
   if (bondLevel) bondLevel.textContent = String(level);
   if (bondFill) bondFill.style.width = `${progress}%`;
   if (chapterChip) chapterChip.textContent = `Chapter ${currentChapter} / ${totalChapters}`;
+  renderLives();
 
   if (deltaCoins !== 0) {
     const center = elementCenter(coinHudItem || coinsCount);
@@ -676,7 +885,6 @@ function updateHud() {
   previousCoins = coins;
   renderHintUi();
 }
-
 function updateProgress() {
   const total = currentChapterData().questions.length;
   const shown = Math.min(questionIndex + 1, total);
@@ -765,57 +973,87 @@ function applyStyle(styleKey) {
   persistState();
 }
 
+function renderStyleButton(key, info) {
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.className = 'style-btn';
+
+  const owned = ownedStyles.includes(key);
+  const active = selectedStyle === key;
+
+  button.innerHTML = `<span class="style-row"><img class="style-icon" src="${info.icon || info.sprite}" alt="${info.label}" /><span class="style-meta"><strong>${info.label}</strong><span class="cost">${owned ? 'Owned' : `${info.cost} coins`}</span></span></span>`;
+
+  if (active) button.classList.add('active');
+  if (!owned) button.classList.add('locked');
+
+  button.addEventListener('click', () => {
+    if (owned) {
+      applyStyle(key);
+      renderStyleShop();
+      setDialogue(`Now wearing ${info.label}.`, 1400);
+      return;
+    }
+
+    const enoughCoins = coins >= info.cost;
+    if (!enoughCoins) {
+      setDialogue(`Need ${info.cost - coins} more coins for ${info.label}.`, 1800);
+      return;
+    }
+
+    coins -= info.cost;
+    const styleCenter = elementCenter(button);
+    if (styleCenter) {
+      spawnCoinBurst(styleCenter.x, styleCenter.y, 8, 96);
+      spawnFloatingScore(`-${info.cost}`, styleCenter.x, styleCenter.y - 10, 'spent');
+    }
+    playSfx('unlock', { rate: 1.03, boost: 0.95 });
+    ownedStyles.push(key);
+    applyStyle(key);
+    updateHud();
+    renderStyleShop();
+    persistState();
+    setDialogue(`Unlocked ${info.label}!`, 1800);
+  });
+
+  return button;
+}
+
 function renderStyleShop() {
   if (!styleShop) return;
 
   styleShop.innerHTML = '';
 
-  Object.entries(wardrobeStyles).forEach(([key, info]) => {
-    const button = document.createElement('button');
-    button.type = 'button';
-    button.className = 'style-btn';
+  const groupedStyles = new Map(characterShopGroups.map((group) => [group.key, []]));
+  const sortedStyles = Object.entries(wardrobeStyles)
+    .sort(([, a], [, b]) => (a.order || 999) - (b.order || 999));
 
-    const owned = ownedStyles.includes(key);
-    const active = selectedStyle === key;
+  sortedStyles.forEach(([key, info]) => {
+    const groupKey = groupedStyles.has(info.group) ? info.group : 'starter';
+    groupedStyles.get(groupKey).push([key, info]);
+  });
 
-    button.innerHTML = `<strong>${info.label}</strong><br /><span class="cost">${owned ? 'Owned' : `${info.cost} coins`}</span>`;
+  characterShopGroups.forEach((group) => {
+    const styles = groupedStyles.get(group.key);
+    if (!styles || styles.length === 0) return;
 
-    if (active) button.classList.add('active');
-    if (!owned) button.classList.add('locked');
+    const section = document.createElement('section');
+    section.className = 'shop-group';
 
-    button.addEventListener('click', () => {
-      if (owned) {
-        applyStyle(key);
-        renderStyleShop();
-        setDialogue(`Now wearing ${info.label}.`, 1400);
-        return;
-      }
+    const title = document.createElement('p');
+    title.className = 'shop-group-title';
+    title.textContent = group.label;
+    section.appendChild(title);
 
-      const enoughCoins = coins >= info.cost;
-      if (!enoughCoins) {
-        setDialogue(`Need ${info.cost - coins} more coins for ${info.label}.`, 1800);
-        return;
-      }
-
-      coins -= info.cost;
-      const styleCenter = elementCenter(button);
-      if (styleCenter) {
-        spawnCoinBurst(styleCenter.x, styleCenter.y, 8, 96);
-        spawnFloatingScore(`-${info.cost}`, styleCenter.x, styleCenter.y - 10, 'spent');
-      }
-      playSfx('unlock', { rate: 1.03, boost: 0.95 });
-      ownedStyles.push(key);
-      applyStyle(key);
-      updateHud();
-      renderStyleShop();
-      persistState();
-      setDialogue(`Unlocked ${info.label}!`, 1800);
+    const grid = document.createElement('div');
+    grid.className = 'shop-grid';
+    styles.forEach(([key, info]) => {
+      grid.appendChild(renderStyleButton(key, info));
     });
 
-    styleShop.appendChild(button);
+    section.appendChild(grid);
+    styleShop.appendChild(section);
   });
 }
-
 function showFeedback(kind, box) {
   if (!box || !feedbackIcons[kind]) return;
 
@@ -907,14 +1145,14 @@ function renderProgrammingHint(question) {
   if (!programmingTag) return;
   const unlocked = unlockedHintKeys.has(currentQuestionKey());
 
-  if (hintVisible && unlocked && question) {
-    programmingTag.textContent = `Hint: ${buildNonRevealingHint(question.value)}`;
+  if (hintVisible && unlocked) {
+    const hintText = getQuestionHint(question);
+    programmingTag.textContent = `Hint: ${hintText}`;
     return;
   }
 
   programmingTag.textContent = DEFAULT_HINT_TEXT;
 }
-
 function syncHintStateForCurrentQuestion() {
   const key = currentQuestionKey();
   if (activeHintKey !== key) {
@@ -925,15 +1163,27 @@ function syncHintStateForCurrentQuestion() {
 }
 
 function spawnValue() {
-  if (!valueContainer || chapterCompleted || cinematicPlaying) return;
-
-  if (activeValue) activeValue.remove();
+  if (chapterCompleted || cinematicPlaying) return;
 
   const question = currentChapterData().questions[questionIndex];
   if (!question) return;
 
+  answerLocked = false;
   syncHintStateForCurrentQuestion();
   renderProgrammingHint(question);
+  clearActiveQuestionViews();
+  clearHighlights();
+
+  const mode = getQuestionMode();
+  setInteractionMode(mode);
+
+  if (mode !== 'box') {
+    renderModeQuestion(question);
+    updateProgress();
+    return;
+  }
+
+  if (!valueContainer) return;
 
   const valueEl = document.createElement('div');
   valueEl.className = 'draggable-value';
@@ -951,7 +1201,7 @@ function spawnValue() {
   valueEl.style.top = `${top}px`;
 
   valueEl.addEventListener('pointerdown', (event) => {
-    if (chapterCompleted || cinematicPlaying) return;
+    if (chapterCompleted || cinematicPlaying || answerLocked) return;
 
     event.preventDefault();
     valueEl.setPointerCapture(event.pointerId);
@@ -974,12 +1224,11 @@ function spawnValue() {
 
 function finishChapter() {
   chapterCompleted = true;
+  chapterFailed = false;
+  answerLocked = true;
   const isFinalChapter = currentChapter === totalChapters;
 
-  if (activeValue) {
-    activeValue.remove();
-    activeValue = null;
-  }
+  clearActiveQuestionViews();
 
   const total = currentChapterData().questions.length;
   const score = roundAttempts > 0 ? Math.round((roundCorrect / roundAttempts) * 100) : 0;
@@ -1013,12 +1262,11 @@ function finishChapter() {
     }
     assessmentSummary.textContent = text;
   }
+
   if (assessmentScore) assessmentScore.textContent = `${score}%`;
   if (assessmentEarned) assessmentEarned.textContent = String(earned);
   if (assessmentTotal) assessmentTotal.textContent = String(coins);
-  if (continueBtn) {
-    continueBtn.textContent = isFinalChapter ? 'Show Ending Story' : 'Continue';
-  }
+  if (continueBtn) continueBtn.textContent = isFinalChapter ? 'Show Ending Story' : 'Continue';
 
   openOverlay(assessmentPanel);
   playSfx('complete', { boost: 1, rate: 1 });
@@ -1029,60 +1277,19 @@ function finishChapter() {
     spawnCoinBurst(chapterCenter.x, chapterCenter.y, 16, 170);
     spawnFloatingScore(`+${earned}`, chapterCenter.x, chapterCenter.y - 18, 'gain');
   }
-  setDialogue(isFinalChapter
-    ? 'Final chapter complete. Ending story is ready.'
-    : 'Post assessment complete. Coins added to your bag!', 2400);
+  setDialogue(isFinalChapter ? 'Final chapter complete. Ending story is ready.' : 'Post assessment complete. Coins added to your bag!', 2400);
 }
 
 function handleDrop(droppedBox) {
+  if (answerLocked || chapterCompleted || cinematicPlaying) return;
   const expectedType = currentChapterData().questions[questionIndex].type;
   const droppedType = droppedBox.dataset.type;
-  const dropCenter = elementCenter(droppedBox);
-
-  roundAttempts += 1;
-
-  if (expectedType === droppedType) {
-    roundCorrect += 1;
-    bondXp += 12;
-    playSfx('correct', { rate: 1.04, boost: 0.9 });
-    showFeedback('good', droppedBox);
-    setDuckReaction('good', 900);
-    setDialogue('Great match. That type is correct!', 1400);
-    flashChallengeZone('good');
-    if (dropCenter) {
-      spawnConfettiBurst(dropCenter.x, dropCenter.y, 18, 140, 'celebrate');
-      spawnCoinBurst(dropCenter.x, dropCenter.y, 6, 96);
-    }
-    if (activeValue) pulseClass(activeValue, 'value-win', 460);
-
-    questionIndex += 1;
-
-    if (questionIndex >= currentChapterData().questions.length) {
-      finishChapter();
-      return;
-    }
-
-    setTimeout(spawnValue, 480);
-  } else {
-    bondXp += 3;
-    playSfx('wrong', { rate: 0.97, boost: 0.95 });
-    showFeedback('bad', droppedBox);
-    setDuckReaction('bad', 850);
-    setDialogue('Close. Read the literal carefully and try again.', 1300);
-    flashChallengeZone('bad');
-    if (dropCenter) {
-      spawnConfettiBurst(dropCenter.x, dropCenter.y, 14, 120, 'splash');
-    }
-    if (activeValue) pulseClass(activeValue, 'value-shake', 500);
-    spawnValue();
-  }
-
-  updateHud();
-  persistState();
+  answerLocked = true;
+  resolveAnswer(expectedType === droppedType, droppedBox);
 }
 
 function handlePointerMove(event) {
-  if (!dragState || event.pointerId !== dragState.pointerId || cinematicPlaying) return;
+  if (!dragState || event.pointerId !== dragState.pointerId || cinematicPlaying || getQuestionMode() !== 'box') return;
 
   const areaRect = valueContainer.getBoundingClientRect();
   const width = dragState.element.offsetWidth;
@@ -1120,7 +1327,7 @@ function clearDragState() {
 }
 
 function handlePointerUp(event) {
-  if (!dragState || event.pointerId !== dragState.pointerId) return;
+  if (!dragState || event.pointerId !== dragState.pointerId || getQuestionMode() !== 'box') return;
 
   const droppedBox = getBoxFromPoint(event.clientX, event.clientY);
   clearHighlights();
@@ -1172,9 +1379,7 @@ async function renderEndingScene({ animateFrame = true } = {}) {
   }
 
   if (endingTitle) {
-    endingTitle.textContent = endingSceneIndex === endingScenes.length - 1
-      ? 'Final Story - The End'
-      : 'Final Story';
+    endingTitle.textContent = endingSceneIndex === endingScenes.length - 1 ? 'Final Story - The End' : 'Final Story';
   }
   if (endingSceneStep) endingSceneStep.textContent = `Scene ${current.scene} / 16`;
   if (endingLine) endingLine.textContent = current.line;
@@ -1372,6 +1577,12 @@ if (hintToggleBtn) {
 if (continueBtn) {
   continueBtn.addEventListener('click', () => {
     closeOverlay(assessmentPanel);
+
+    if (chapterFailed) {
+      loadChapter(currentChapter, { withCinematic: false });
+      return;
+    }
+
     if (currentChapter === totalChapters && chapterCompleted) {
       openEndingStory();
       return;
@@ -1430,6 +1641,9 @@ async function loadChapter(chapterNumber, options = {}) {
   roundCorrect = 0;
   roundAttempts = 0;
   chapterCompleted = false;
+  chapterFailed = false;
+  lives = MAX_LIVES;
+  answerLocked = false;
 
   if (activeValue) {
     activeValue.remove();
