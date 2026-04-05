@@ -314,6 +314,7 @@ const SFX_LIBRARY = {
   correct: '../assets/sound/mysfx_game_show_correct.mp3',
   wrong: '../assets/sound/mysfx_duolingo_wrong.mp3',
   hint: '../assets/sound/mysfx_google_meet_message_sound.mp3',
+  click: '../assets/sound/mysfx_click.mp3',
   unlock: '../assets/sound/mysfx_top.mp3',
   complete: '../assets/sound/mysfx_winners.mp3'
 };
@@ -372,6 +373,10 @@ function playSfx(name, options = {}) {
   track.playbackRate = rate;
   track.volume = clamp(sfxMasterVolume * boost, 0, 1);
   track.play().catch(() => {});
+}
+
+function playClickSfx(options = {}) {
+  playSfx('click', { rate: options.rate ?? 1, boost: options.boost ?? 0.62 });
 }
 
 function randomBetween(min, max) {
@@ -965,6 +970,7 @@ function renderChapterButtons() {
     }
 
     button.addEventListener('click', () => {
+      playClickSfx();
       if (i > unlockedChapter) {
         setDialogue('Complete earlier chapters first to unlock this one.', 2000);
         return;
@@ -1021,6 +1027,7 @@ function renderStyleButton(key, info) {
   if (!owned) button.classList.add('locked');
 
   button.addEventListener('click', () => {
+    playClickSfx({ boost: 0.58 });
     if (owned) {
       applyStyle(key);
       renderStyleShop();
@@ -1582,27 +1589,62 @@ async function playChapterCinematic(chapter) {
 if (skipCinematic) {
   skipCinematic.addEventListener('click', () => {
     if (!cinematicPlaying) return;
+    playClickSfx();
     cinematicSkipRequested = true;
   });
 }
 
-if (settingsToggle) settingsToggle.addEventListener('click', () => openOverlay(settingsPanel));
-if (closeSettings) closeSettings.addEventListener('click', () => closeOverlay(settingsPanel));
-if (journalToggle) journalToggle.addEventListener('click', () => openOverlay(journalPanel));
-if (closeJournal) closeJournal.addEventListener('click', () => closeOverlay(journalPanel));
-if (shopToggle) shopToggle.addEventListener('click', () => openOverlay(shopPanel));
-if (closeShop) closeShop.addEventListener('click', () => closeOverlay(shopPanel));
+if (settingsToggle) {
+  settingsToggle.addEventListener('click', () => {
+    playClickSfx();
+    openOverlay(settingsPanel);
+  });
+}
+if (closeSettings) {
+  closeSettings.addEventListener('click', () => {
+    playClickSfx({ boost: 0.55 });
+    closeOverlay(settingsPanel);
+  });
+}
+if (journalToggle) {
+  journalToggle.addEventListener('click', () => {
+    playClickSfx();
+    openOverlay(journalPanel);
+  });
+}
+if (closeJournal) {
+  closeJournal.addEventListener('click', () => {
+    playClickSfx({ boost: 0.55 });
+    closeOverlay(journalPanel);
+  });
+}
+if (shopToggle) {
+  shopToggle.addEventListener('click', () => {
+    playClickSfx();
+    openOverlay(shopPanel);
+  });
+}
+if (closeShop) {
+  closeShop.addEventListener('click', () => {
+    playClickSfx({ boost: 0.55 });
+    closeOverlay(shopPanel);
+  });
+}
 
 [settingsPanel, journalPanel, shopPanel, assessmentPanel, endingPanel].forEach((panel) => {
   if (!panel) return;
   panel.addEventListener('click', (event) => {
-    if (event.target === panel) closeOverlay(panel);
+    if (event.target === panel) {
+      playClickSfx({ boost: 0.5 });
+      closeOverlay(panel);
+    }
   });
 });
 
 if (hintToggleBtn) {
   hintToggleBtn.addEventListener('click', () => {
     if (cinematicPlaying || chapterCompleted) return;
+    playClickSfx({ boost: 0.55 });
     const question = currentChapterData().questions[questionIndex];
     if (!question) return;
 
@@ -1640,6 +1682,7 @@ if (hintToggleBtn) {
 
 if (continueBtn) {
   continueBtn.addEventListener('click', () => {
+    playClickSfx();
     closeOverlay(assessmentPanel);
 
     if (chapterFailed) {
@@ -1662,12 +1705,14 @@ if (continueBtn) {
 
 if (endingNextBtn) {
   endingNextBtn.addEventListener('click', () => {
+    playClickSfx();
     replayEndingStory();
   });
 }
 
 if (endingHomeBtn) {
   endingHomeBtn.addEventListener('click', () => {
+    playClickSfx();
     if (!confirmExitToHome('ending')) return;
     finishEndingStory();
     navigateToHome();
@@ -1686,6 +1731,7 @@ document.addEventListener('keydown', (event) => {
 
 if (homeButton) {
   homeButton.addEventListener('click', () => {
+    playClickSfx();
     if (!confirmExitToHome('game')) return;
     navigateToHome();
   });
