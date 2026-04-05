@@ -910,7 +910,6 @@ function clearDragState() {
       dragState.element.releasePointerCapture(dragState.pointerId);
     }
   } catch {
-    // Ignore capture release failures.
   }
 
   dragState = null;

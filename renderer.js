@@ -516,8 +516,6 @@ if (exitButton) {
   });
 }
 
-// bg music
-
 const bgAudio = document.getElementById('bg-music');
 const volumeButton = document.getElementById('volume-button');
 
@@ -567,7 +565,6 @@ window.addEventListener('load', () => {
         const t = Math.min(parseFloat(savedTime), bgAudio.duration || parseFloat(savedTime));
         if (isFinite(t)) bgAudio.currentTime = t;
       } catch (error) {
-        // Ignore set currentTime failures.
       }
     }
 
@@ -607,7 +604,6 @@ window.addEventListener('beforeunload', () => {
     localStorage.setItem('bgMusicTime', bgAudio.currentTime);
     localStorage.setItem('bgMusicMuted', bgAudio.muted);
   } catch (error) {
-    // Ignore storage errors.
   }
 });
 
@@ -619,12 +615,9 @@ if (volumeButton && bgAudio) {
     try {
       localStorage.setItem('bgMusicMuted', bgAudio.muted);
     } catch (error) {
-      // Ignore storage errors.
     }
   });
 }
-
-// Google sign-in button
 
 const GOOGLE_CLIENT_ID = '919060356678-3ol8je1dp95k0fjchaeaeqsemgvoejte.apps.googleusercontent.com';
 const REDIRECT_URI = `${window.location.origin}/oauth2callback.html`;
