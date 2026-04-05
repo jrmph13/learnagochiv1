@@ -27,9 +27,10 @@ const startButton = document.getElementById('start-button');
 const exitButton = document.getElementById('exit-button');
 const googleSignInButton = document.getElementById('google-signin');
 
-const GAME_START_URL = 'Game/index.html?v=20260404j';
+const GAME_START_URL = '/?play=1';
 const EXIT_REDIRECT_URL = 'https://www.google.com/';
 const INTRO_SEEN_KEY = 'learnagochiIntroSeen';
+const UI_CLICK_SFX_URL = 'assets/sound/mysfx_click.mp3';
 
 const DEFAULT_TIMINGS = {
   pollMs: 24,
@@ -66,6 +67,27 @@ let introTimings = DEFAULT_TIMINGS;
 let storyImageReady = false;
 let storyRenderFrame = 0;
 let storyAnimationRunId = 0;
+let uiClickTrack = null;
+
+function pulseButtonClick(element) {
+  if (!element) return;
+  element.classList.remove('btn-click-pop');
+  void element.offsetWidth;
+  element.classList.add('btn-click-pop');
+}
+
+function playUiClick(element, volume = 0.62) {
+  pulseButtonClick(element);
+
+  if (!uiClickTrack) {
+    uiClickTrack = new Audio(UI_CLICK_SFX_URL);
+    uiClickTrack.preload = 'auto';
+  }
+
+  uiClickTrack.currentTime = 0;
+  uiClickTrack.volume = Math.max(0, Math.min(1, volume));
+  uiClickTrack.play().catch(() => {});
+}
 
 const STORY_SHEET_COLUMNS = 4;
 const STORY_SHEET_ROWS = 4;
@@ -457,6 +479,7 @@ async function startFromName() {
 
 if (startButton) {
   startButton.addEventListener('click', () => {
+    playUiClick(startButton, 0.66);
     if (startScreen) startScreen.style.display = 'none';
     if (cutsceneScreen) cutsceneScreen.style.display = 'flex';
 
@@ -494,6 +517,7 @@ if (playerNameInput) {
 if (skipIntroButton) {
   skipIntroButton.addEventListener('click', () => {
     if (!introRunning) return;
+    playUiClick(skipIntroButton, 0.52);
     skipRequested = true;
     skipIntroButton.textContent = 'Skipping...';
     setTimeout(() => {
@@ -504,6 +528,7 @@ if (skipIntroButton) {
 
 if (exitButton) {
   exitButton.addEventListener('click', () => {
+    playUiClick(exitButton, 0.56);
     if (!confirm('Close this tab?')) return;
     window.location.replace(EXIT_REDIRECT_URL);
   });
@@ -602,6 +627,7 @@ window.addEventListener('beforeunload', () => {
 
 if (volumeButton && bgAudio) {
   volumeButton.addEventListener('click', () => {
+    playUiClick(volumeButton, 0.48);
     bgAudio.muted = !bgAudio.muted;
     volumeButton.src = bgAudio.muted ? 'assets/Volume-off.png' : 'assets/Volume-on.png';
 
@@ -689,6 +715,13 @@ async function handleGoogleSignIn() {
 if (googleSignInButton) {
   googleSignInButton.addEventListener('click', (event) => {
     event.preventDefault();
+    playUiClick(googleSignInButton, 0.62);
     handleGoogleSignIn();
+  });
+}
+
+if (enterNameButton) {
+  enterNameButton.addEventListener('click', () => {
+    playUiClick(enterNameButton, 0.58);
   });
 }

@@ -6,6 +6,17 @@
   "rewrites": [
     {
       "source": "/",
+      "has": [
+        {
+          "type": "query",
+          "key": "play",
+          "value": "1"
+        }
+      ],
+      "destination": "/Game/index.html"
+    },
+    {
+      "source": "/",
       "destination": "/index.html"
     }
   ]

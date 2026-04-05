@@ -330,6 +330,21 @@ const SFX_POOL_SIZE = 4;
 let sfxMasterVolume = 0.8;
 const sfxPools = new Map();
 
+function normalizeGameUrl() {
+  try {
+    const { pathname, search, hash } = window.location;
+    const isGameFilePath = /\/Game\/index\.html$/i.test(pathname);
+    const playToken = new URLSearchParams(search).get('play') === '1';
+    if (!isGameFilePath && !playToken) return;
+    if (pathname === '/' && !search) return;
+    const nextUrl = hash ? `/${hash}` : '/';
+    window.history.replaceState(window.history.state, '', nextUrl);
+  } catch (error) {
+  }
+}
+
+normalizeGameUrl();
+
 function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
 }
@@ -435,6 +450,12 @@ function pulseClass(element, className, duration = 420) {
     element.classList.remove(className);
   }, duration);
 }
+
+document.addEventListener('pointerdown', (event) => {
+  const target = event.target.closest('button, .box, .style-btn, .chapter-btn, .mode-option, .ui-btn, .close-btn');
+  if (!target) return;
+  pulseClass(target, 'btn-click-pop', 180);
+}, { passive: true });
 
 function flashChallengeZone(kind) {
   if (!challengeZone) return;
@@ -1529,10 +1550,10 @@ function confirmExitToHome(mode = 'game') {
 }
 
 function navigateToHome() {
-  const gamePathPattern = /\/Game\/index\.html$/i;
   const tryFallbackHome = () => {
-    if (gamePathPattern.test(window.location.pathname)) {
-      window.location.replace('../index.html');
+    const onHomePath = window.location.pathname === '/' || /\/index\.html$/i.test(window.location.pathname);
+    if (!onHomePath) {
+      window.location.replace('/');
     }
   };
 
@@ -1542,7 +1563,7 @@ function navigateToHome() {
     return;
   }
 
-  window.location.replace('../index.html');
+  window.location.replace('/');
 }
 
 function openCinematic() {
