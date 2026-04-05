@@ -3,6 +3,18 @@
   "outputDirectory": ".",
   "cleanUrls": false,
   "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/index.html",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/Game/index.html",
+      "destination": "/?play=1",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
       "source": "/",
