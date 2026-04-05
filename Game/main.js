@@ -297,6 +297,16 @@ const COIN_PARTICLE_ASSET = '../assets/coin.svg';
 const HINT_COIN_COST = 100;
 const DEFAULT_HINT_TEXT = 'Hints are hidden. Spend 100 coins to buy one bread clue for this challenge.';
 const EFFECT_COLORS = ['#f8d25b', '#ff8a78', '#8fd9ff', '#9fe39b', '#f4e9d1', '#ffc17e'];
+const SFX_LIBRARY = {
+  correct: '../assets/sound/mysfx_game_show_correct.mp3',
+  wrong: '../assets/sound/mysfx_duolingo_wrong.mp3',
+  hint: '../assets/sound/mysfx_google_meet_message_sound.mp3',
+  unlock: '../assets/sound/mysfx_top.mp3',
+  complete: '../assets/sound/mysfx_winners.mp3'
+};
+const SFX_POOL_SIZE = 4;
+let sfxMasterVolume = 0.8;
+const sfxPools = new Map();
 
 function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
@@ -304,6 +314,51 @@ function clamp(value, min, max) {
 
 function wait(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function ensureSfxPool(name) {
+  const source = SFX_LIBRARY[name];
+  if (!source) return [];
+  if (sfxPools.has(name)) return sfxPools.get(name);
+
+  const pool = [];
+  for (let i = 0; i < SFX_POOL_SIZE; i += 1) {
+    const audio = new Audio(source);
+    audio.preload = 'auto';
+    audio.volume = sfxMasterVolume;
+    pool.push(audio);
+  }
+
+  sfxPools.set(name, pool);
+  return pool;
+}
+
+function setSfxVolume(normalizedValue) {
+  sfxMasterVolume = clamp(Number(normalizedValue) || 0, 0, 1);
+  sfxPools.forEach((pool) => {
+    pool.forEach((audio) => {
+      audio.volume = sfxMasterVolume;
+    });
+  });
+}
+
+function playSfx(name, options = {}) {
+  if (sfxMasterVolume <= 0) return;
+  const pool = ensureSfxPool(name);
+  if (!pool.length) return;
+
+  let track = pool.find((audio) => audio.paused || audio.ended);
+  if (!track) {
+    track = pool[0];
+    track.pause();
+  }
+
+  const boost = clamp(Number(options.boost) || 1, 0, 1.8);
+  const rate = clamp(Number(options.rate) || 1, 0.75, 1.35);
+  track.currentTime = 0;
+  track.playbackRate = rate;
+  track.volume = clamp(sfxMasterVolume * boost, 0, 1);
+  track.play().catch(() => {});
 }
 
 function randomBetween(min, max) {
@@ -748,6 +803,7 @@ function renderStyleShop() {
         spawnCoinBurst(styleCenter.x, styleCenter.y, 8, 96);
         spawnFloatingScore(`-${info.cost}`, styleCenter.x, styleCenter.y - 10, 'spent');
       }
+      playSfx('unlock', { rate: 1.03, boost: 0.95 });
       ownedStyles.push(key);
       applyStyle(key);
       updateHud();
@@ -965,6 +1021,7 @@ function finishChapter() {
   }
 
   openOverlay(assessmentPanel);
+  playSfx('complete', { boost: 1, rate: 1 });
   setDuckReaction('complete', 1200);
   const chapterCenter = elementCenter(challengeZone || valueContainer);
   if (chapterCenter) {
@@ -987,6 +1044,7 @@ function handleDrop(droppedBox) {
   if (expectedType === droppedType) {
     roundCorrect += 1;
     bondXp += 12;
+    playSfx('correct', { rate: 1.04, boost: 0.9 });
     showFeedback('good', droppedBox);
     setDuckReaction('good', 900);
     setDialogue('Great match. That type is correct!', 1400);
@@ -1007,6 +1065,7 @@ function handleDrop(droppedBox) {
     setTimeout(spawnValue, 480);
   } else {
     bondXp += 3;
+    playSfx('wrong', { rate: 0.97, boost: 0.95 });
     showFeedback('bad', droppedBox);
     setDuckReaction('bad', 850);
     setDialogue('Close. Read the literal carefully and try again.', 1300);
@@ -1283,6 +1342,7 @@ if (hintToggleBtn) {
 
     if (!unlocked) {
       if (coins < HINT_COIN_COST) {
+        playSfx('wrong', { rate: 0.92, boost: 0.72 });
         setDialogue(`Need ${HINT_COIN_COST - coins} more coins to buy bread hint.`, 1400);
         renderHintUi();
         return;
@@ -1296,6 +1356,7 @@ if (hintToggleBtn) {
         spawnCoinBurst(hintCenter.x, hintCenter.y, 8, 95);
         spawnFloatingScore(`-${HINT_COIN_COST}`, hintCenter.x, hintCenter.y - 10, 'spent');
       }
+      playSfx('hint', { rate: 1.06, boost: 1 });
       setDialogue('Bread clue unlocked for this challenge.', 1200);
       updateHud();
       persistState();
@@ -1402,6 +1463,9 @@ async function loadChapter(chapterNumber, options = {}) {
 function resumeAudio() {
   if (!gameBgm) return;
   gameBgm.play().catch(() => {});
+  Object.keys(SFX_LIBRARY).forEach((name) => {
+    ensureSfxPool(name);
+  });
   window.removeEventListener('pointerdown', resumeAudio);
 }
 
@@ -1412,8 +1476,12 @@ if (gameBgm) {
   const sfx = Number.isFinite(savedSfx) ? clamp(savedSfx, 0, 100) : 80;
 
   gameBgm.volume = bg / 100;
+  setSfxVolume(sfx / 100);
   if (bgVolumeSlider) bgVolumeSlider.value = String(bg);
   if (sfxVolumeSlider) sfxVolumeSlider.value = String(sfx);
+  Object.keys(SFX_LIBRARY).forEach((name) => {
+    ensureSfxPool(name);
+  });
 
   gameBgm.play().catch(() => {
     window.addEventListener('pointerdown', resumeAudio, { once: true });
@@ -1430,6 +1498,7 @@ if (gameBgm) {
   if (sfxVolumeSlider) {
     sfxVolumeSlider.addEventListener('input', () => {
       const value = clamp(Number(sfxVolumeSlider.value), 0, 100);
+      setSfxVolume(value / 100);
       localStorage.setItem('gameSfxVolume', String(value));
     });
   }

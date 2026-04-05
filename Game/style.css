@@ -217,9 +217,10 @@ body::before {
   height: 100dvh;
   padding: calc(max(10px, env(safe-area-inset-top)) + 110px) max(10px, env(safe-area-inset-right)) max(10px, env(safe-area-inset-bottom)) max(10px, env(safe-area-inset-left));
   display: grid;
-  grid-template-columns: 1fr 1.08fr;
+  grid-template-columns: 0.96fr 1.04fr;
   gap: 12px;
   overflow: auto;
+  align-items: stretch;
 }
 
 .panel {
@@ -228,6 +229,7 @@ body::before {
   border: 1px solid rgba(255, 255, 255, 0.12);
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
+  min-height: 0;
 }
 
 #duck-zone {
@@ -322,12 +324,13 @@ body::before {
 }
 
 #challenge-zone {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-rows: auto auto auto auto auto minmax(0, 1fr) auto;
   padding: 10px 12px;
   position: relative;
-  overflow: hidden;
+  overflow: auto;
   transition: box-shadow 0.28s ease, transform 0.28s ease;
+  gap: 8px;
 }
 
 #challenge-zone.zone-flash-good {
@@ -343,7 +346,8 @@ body::before {
 .chapter-strip {
   display: flex;
   gap: 8px;
-  margin-bottom: 8px;
+  margin-bottom: 0;
+  flex-wrap: wrap;
 }
 
 .chapter-pill {
@@ -368,11 +372,11 @@ body::before {
   align-items: baseline;
   gap: 10px;
   flex-wrap: wrap;
-  margin-bottom: 2px;
+  margin-bottom: 0;
 }
 
 #chapter-meta {
-  margin-bottom: 8px;
+  margin-bottom: 0;
   display: grid;
   gap: 4px;
   padding: 8px 10px;
@@ -383,7 +387,7 @@ body::before {
 
 .chapter-meta p {
   margin: 0;
-  font-size: clamp(20px, 1.45vw, 27px);
+  font-size: clamp(16px, 1.08vw, 22px);
   line-height: 1.26;
   color: #fbf8ee;
   text-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
@@ -391,32 +395,32 @@ body::before {
 
 #chapter-title {
   margin: 0;
-  font-size: clamp(34px, 2.55vw, 45px);
+  font-size: clamp(26px, 2.05vw, 38px);
   line-height: 1.1;
   text-shadow: 0 2px 10px rgba(0, 0, 0, 0.36);
 }
 
 #progress-text {
   margin: 0;
-  font-size: clamp(28px, 2vw, 35px);
+  font-size: clamp(22px, 1.65vw, 30px);
   line-height: 1;
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
 }
 
 #programming-tag {
-  margin: 0 0 10px;
+  margin: 0;
   padding: 8px 10px;
   border-radius: 12px;
   background: rgba(5, 14, 20, 0.32);
   border: 1px solid rgba(255, 255, 255, 0.12);
-  font-size: clamp(21px, 1.5vw, 27px);
+  font-size: clamp(16px, 1.07vw, 21px);
   line-height: 1.24;
   color: #fdfaf0;
   text-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
 }
 
 .hint-controls {
-  margin: 0 0 8px;
+  margin: 0;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -425,7 +429,7 @@ body::before {
 
 .hint-toggle-btn {
   padding: 7px 14px;
-  font-size: clamp(17px, 1.1vw, 22px);
+  font-size: clamp(15px, 1vw, 20px);
   border: 1px solid rgba(255, 255, 255, 0.14);
 }
 
@@ -437,16 +441,15 @@ body::before {
 }
 
 .hint-status {
-  font-size: clamp(16px, 1.05vw, 21px);
+  font-size: clamp(14px, 0.95vw, 18px);
   line-height: 1.15;
   color: rgba(247, 244, 233, 0.95);
   text-shadow: 0 2px 6px rgba(0, 0, 0, 0.42);
 }
 
 #value-container {
-  flex: 1;
   position: relative;
-  min-height: 180px;
+  min-height: 150px;
 }
 
 .draggable-value {
@@ -490,14 +493,15 @@ body::before {
   justify-content: space-evenly;
   flex-wrap: wrap;
   gap: 10px;
-  padding: 12px 6px 6px;
+  padding: 10px 4px 6px;
   border-top: 1px solid rgba(255, 255, 255, 0.12);
+  align-items: flex-end;
 }
 
 .box {
-  width: min(25vw, 176px);
-  max-width: 176px;
-  min-width: 105px;
+  width: min(22vw, 154px);
+  max-width: 154px;
+  min-width: 94px;
   aspect-ratio: 1 / 1;
   object-fit: contain;
   border-radius: 16px;
@@ -1046,7 +1050,7 @@ body::before {
   }
 
   #game-stage {
-    grid-template-columns: 0.98fr 1.02fr;
+    grid-template-columns: 0.92fr 1.08fr;
   }
 }
 
@@ -1058,12 +1062,12 @@ body::before {
 
   #game-stage {
     grid-template-columns: 1fr;
-    grid-template-rows: minmax(300px, 42dvh) 1fr;
+    grid-template-rows: minmax(260px, 40dvh) 1fr;
     padding-top: calc(max(8px, env(safe-area-inset-top)) + 152px);
   }
 
   #duck-zone {
-    max-height: 42dvh;
+    max-height: 40dvh;
   }
 
   .style-shop {
@@ -1119,16 +1123,21 @@ body::before {
     gap: 8px;
   }
 
+  #challenge-zone {
+    gap: 7px;
+    padding: 9px 9px;
+  }
+
   #duck-character {
     max-height: min(34dvh, 290px);
   }
 
   #chapter-title {
-    font-size: clamp(28px, 7.2vw, 38px);
+    font-size: clamp(24px, 6.3vw, 34px);
   }
 
   #progress-text {
-    font-size: clamp(24px, 6vw, 32px);
+    font-size: clamp(20px, 5.2vw, 28px);
   }
 
   .draggable-value {
@@ -1138,8 +1147,8 @@ body::before {
   }
 
   .box {
-    min-width: 84px;
-    width: min(28vw, 128px);
+    min-width: 74px;
+    width: min(27vw, 120px);
   }
 
   .cinematic-card {
@@ -1172,11 +1181,11 @@ body::before {
 
   #game-stage {
     padding-top: calc(max(6px, env(safe-area-inset-top)) + 212px);
-    grid-template-rows: minmax(250px, 38dvh) 1fr;
+    grid-template-rows: minmax(236px, 36dvh) 1fr;
   }
 
   #challenge-zone {
-    padding: 9px 8px;
+    padding: 8px 7px;
   }
 
   #duck-name {
@@ -1194,20 +1203,20 @@ body::before {
 
   .chapter-meta p,
   #programming-tag {
-    font-size: clamp(18px, 4.6vw, 24px);
-  }
-
-  .hint-toggle-btn {
-    font-size: clamp(15px, 4vw, 19px);
-    padding: 6px 10px;
-  }
-
-  .hint-status {
     font-size: clamp(14px, 3.8vw, 18px);
   }
 
+  .hint-toggle-btn {
+    font-size: clamp(13px, 3.5vw, 16px);
+    padding: 5px 9px;
+  }
+
+  .hint-status {
+    font-size: clamp(12px, 3.2vw, 15px);
+  }
+
   #value-container {
-    min-height: 150px;
+    min-height: 112px;
   }
 
   .draggable-value {
@@ -1216,8 +1225,8 @@ body::before {
   }
 
   #box-container {
-    gap: 8px;
-    padding: 10px 4px 4px;
+    gap: 6px;
+    padding: 8px 2px 2px;
   }
 }
 
