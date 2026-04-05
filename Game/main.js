@@ -280,10 +280,13 @@ let chapterLoadToken = 0;
 let endingSceneIndex = 0;
 let endingFrameIndex = endingScenes[0]?.frameIndex ?? 12;
 let endingTransitionToken = 0;
+let endingAutoRunToken = 0;
+let endingAutoPlaying = false;
 
 const ENDING_SHEET_COLUMNS = 4;
 const ENDING_SHEET_ROWS = 4;
 const ENDING_TRANSITION_MS = 480;
+const ENDING_AUTO_HOLD_MS = 2200;
 const endingSpriteSheet = new Image();
 endingSpriteSheet.src = '../assets/characters/spritesheet-story.png';
 const HINT_COIN_COST = 8;
@@ -295,6 +298,18 @@ function clamp(value, min, max) {
 
 function wait(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function waitEndingAuto(ms, runToken) {
+  return new Promise((resolve) => {
+    const started = Date.now();
+    const timer = setInterval(() => {
+      if (runToken !== endingAutoRunToken || Date.now() - started >= ms) {
+        clearInterval(timer);
+        resolve(runToken === endingAutoRunToken);
+      }
+    }, 30);
+  });
 }
 
 function clampEndingFrame(value) {
@@ -938,6 +953,8 @@ function closeOverlay(overlay) {
   overlay.setAttribute('aria-hidden', 'true');
   if (overlay === endingPanel) {
     endingTransitionToken += 1;
+    endingAutoRunToken += 1;
+    endingAutoPlaying = false;
   }
 }
 
@@ -959,24 +976,55 @@ async function renderEndingScene({ animateFrame = true } = {}) {
   if (endingSceneStep) endingSceneStep.textContent = `Scene ${current.scene} / 16`;
   if (endingLine) endingLine.textContent = current.line;
   if (endingSubline) endingSubline.textContent = current.subline;
+}
+
+async function playEndingAutoSequence() {
+  endingAutoRunToken += 1;
+  const runToken = endingAutoRunToken;
+  endingAutoPlaying = true;
+
   if (endingNextBtn) {
-    endingNextBtn.textContent = endingSceneIndex === endingScenes.length - 1 ? 'Finish' : 'Next Scene';
+    endingNextBtn.disabled = true;
+    endingNextBtn.textContent = 'Auto Playing...';
+  }
+
+  for (let index = 0; index < endingScenes.length; index += 1) {
+    if (runToken !== endingAutoRunToken) return;
+
+    endingSceneIndex = index;
+    await renderEndingScene({ animateFrame: index !== 0 });
+    const stillActive = await waitEndingAuto(ENDING_AUTO_HOLD_MS, runToken);
+    if (!stillActive) return;
+  }
+
+  if (runToken !== endingAutoRunToken) return;
+  endingAutoPlaying = false;
+  if (endingNextBtn) {
+    endingNextBtn.disabled = false;
+    endingNextBtn.textContent = 'Replay Ending';
   }
 }
 
 function openEndingStory() {
   endingSceneIndex = 0;
-  renderEndingScene({ animateFrame: false });
   openOverlay(endingPanel);
+  renderEndingScene({ animateFrame: false });
+  playEndingAutoSequence();
   setDialogue('Final story unlocked. You finished all chapters!', 2600);
   setDuckReaction('complete', 1100);
 }
 
-async function advanceEndingStory() {
-  if (endingSceneIndex < endingScenes.length - 1) {
-    endingSceneIndex += 1;
-    await renderEndingScene({ animateFrame: true });
-    return;
+function replayEndingStory() {
+  if (endingAutoPlaying) return;
+  endingSceneIndex = 0;
+  renderEndingScene({ animateFrame: false });
+  playEndingAutoSequence();
+}
+
+function finishEndingStory() {
+  if (endingAutoPlaying) {
+    endingAutoRunToken += 1;
+    endingAutoPlaying = false;
   }
 
   closeOverlay(endingPanel);
@@ -1129,13 +1177,13 @@ if (continueBtn) {
 
 if (endingNextBtn) {
   endingNextBtn.addEventListener('click', () => {
-    advanceEndingStory();
+    replayEndingStory();
   });
 }
 
 if (endingHomeBtn) {
   endingHomeBtn.addEventListener('click', () => {
-    closeOverlay(endingPanel);
+    finishEndingStory();
     window.location.href = '../index.html';
   });
 }
