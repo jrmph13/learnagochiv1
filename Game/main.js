@@ -31,6 +31,9 @@ const closeSettings = document.getElementById('close-settings');
 const journalToggle = document.getElementById('journal-toggle');
 const journalPanel = document.getElementById('journal-panel');
 const closeJournal = document.getElementById('close-journal');
+const shopToggle = document.getElementById('shop-toggle');
+const shopPanel = document.getElementById('shop-panel');
+const closeShop = document.getElementById('close-shop');
 const homeButton = document.getElementById('home-button');
 
 const chapterButtons = document.getElementById('chapter-buttons');
@@ -1528,8 +1531,10 @@ if (settingsToggle) settingsToggle.addEventListener('click', () => openOverlay(s
 if (closeSettings) closeSettings.addEventListener('click', () => closeOverlay(settingsPanel));
 if (journalToggle) journalToggle.addEventListener('click', () => openOverlay(journalPanel));
 if (closeJournal) closeJournal.addEventListener('click', () => closeOverlay(journalPanel));
+if (shopToggle) shopToggle.addEventListener('click', () => openOverlay(shopPanel));
+if (closeShop) closeShop.addEventListener('click', () => closeOverlay(shopPanel));
 
-[settingsPanel, journalPanel, assessmentPanel, endingPanel].forEach((panel) => {
+[settingsPanel, journalPanel, shopPanel, assessmentPanel, endingPanel].forEach((panel) => {
   if (!panel) return;
   panel.addEventListener('click', (event) => {
     if (event.target === panel) closeOverlay(panel);
@@ -1613,6 +1618,7 @@ document.addEventListener('keydown', (event) => {
   if (event.key === 'Escape') {
     closeOverlay(settingsPanel);
     closeOverlay(journalPanel);
+    closeOverlay(shopPanel);
     closeOverlay(endingPanel);
     if (cinematicPlaying) cinematicSkipRequested = true;
   }

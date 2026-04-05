@@ -312,15 +312,12 @@ body::before {
   line-height: 1.2;
 }
 
-.duck-shop-panel {
-  width: min(95%, 560px);
+.shop-modal {
+  width: min(960px, 94vw);
+  padding: 22px 24px 18px;
   display: grid;
-  gap: 6px;
-  margin-top: 2px;
-  padding: 8px;
-  border-radius: 14px;
-  background: rgba(8, 21, 29, 0.28);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  gap: 10px;
+  background: linear-gradient(#efe4cd, #e6d9bd);
 }
 
 .shop-head {
@@ -344,7 +341,7 @@ body::before {
   width: 100%;
   display: grid;
   gap: 10px;
-  max-height: min(42vh, 420px);
+  max-height: min(62vh, 560px);
   overflow: auto;
   padding-right: 2px;
   align-content: start;
@@ -1347,9 +1344,9 @@ body::before {
     min-height: 54px;
   }
 
-  .duck-shop-panel {
-    width: 100%;
-    padding: 7px;
+  .shop-modal {
+    width: min(96vw, 620px);
+    padding: 16px 14px 14px;
   }
 
   .shop-grid {

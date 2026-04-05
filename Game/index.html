@@ -18,6 +18,7 @@
     <div class="topbar-actions">
       <button id="settings-toggle" class="ui-btn" type="button">Settings</button>
       <button id="journal-toggle" class="ui-btn" type="button">Journal</button>
+      <button id="shop-toggle" class="ui-btn" type="button">Shop</button>
       <button id="home-button" class="ui-btn" type="button">Home</button>
     </div>
   </header>
@@ -37,14 +38,6 @@
       </div>
       <p id="duck-name">Bread Duck</p>
       <p id="duck-dialogue" class="duck-dialogue">You saved me. Let us learn together, one line at a time.</p>
-
-      <section class="duck-shop-panel" aria-label="Character shop">
-        <div class="shop-head">
-          <h2 class="shop-title">Character Shop</h2>
-          <p class="shop-subtitle">Unlock and switch your duck styles.</p>
-        </div>
-        <div id="style-shop" class="style-shop"></div>
-      </section>
     </section>
 
     <section id="challenge-zone" class="panel">
@@ -168,6 +161,17 @@
         <div>Total Coins: <span id="assessment-total">0</span></div>
       </div>
       <button id="continue-btn" class="ui-btn large" type="button">Continue</button>
+    </div>
+  </aside>
+
+  <aside id="shop-panel" class="overlay" aria-hidden="true">
+    <div class="modal shop-modal">
+      <button id="close-shop" class="close-btn" type="button" aria-label="Close shop">x</button>
+      <div class="shop-head">
+        <h2 class="shop-title">Character Shop</h2>
+        <p class="shop-subtitle">Unlock and switch your duck styles.</p>
+      </div>
+      <div id="style-shop" class="style-shop"></div>
     </div>
   </aside>
 
