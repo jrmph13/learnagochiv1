@@ -332,12 +332,10 @@ const sfxPools = new Map();
 
 function normalizeGameUrl() {
   try {
-    const { pathname, search, hash } = window.location;
+    const { pathname, hash } = window.location;
     const isGameFilePath = /\/Game\/index\.html$/i.test(pathname);
-    const playToken = new URLSearchParams(search).get('play') === '1';
-    if (!isGameFilePath && !playToken) return;
-    if (pathname === '/' && !search) return;
-    const nextUrl = hash ? `/${hash}` : '/';
+    if (!isGameFilePath) return;
+    const nextUrl = hash ? `/game${hash}` : '/game';
     window.history.replaceState(window.history.state, '', nextUrl);
   } catch (error) {
   }

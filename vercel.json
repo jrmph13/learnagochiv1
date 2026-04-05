@@ -6,7 +6,7 @@
   "redirects": [
     {
       "source": "/Game/index.html",
-      "destination": "/",
+      "destination": "/game",
       "permanent": true
     }
   ],
@@ -16,7 +16,7 @@
       "destination": "/index.html"
     },
     {
-      "source": "/",
+      "source": "/game",
       "destination": "/Game/index.html"
     }
   ]
