@@ -77,18 +77,18 @@ const feedbackIcons = {
 
 const wardrobeStyles = {
   idle: { label: 'starter-duck', cost: 0, group: 'starter', order: 1, sprite: '../assets/characters/duck-idle.png', icon: '../assets/characters/duck-idle.png' },
-  bread_duck: { label: 'bread-duck', cost: 25, group: 'starter', order: 2, sprite: '../assets/characters/bread.png', icon: '../assets/characters/bread.png' },
-  brainy_duck: { label: 'brainy-duck', cost: 35, group: 'school', order: 3, sprite: '../assets/characters/brainy-duck.png', icon: '../assets/characters/brainy-duck.png' },
-  business_duck: { label: 'business-duck', cost: 45, group: 'school', order: 4, sprite: '../assets/characters/business.png', icon: '../assets/characters/business.png' },
-  dj_duck: { label: 'dj-duck', cost: 55, group: 'school', order: 5, sprite: '../assets/characters/dj.png', icon: '../assets/characters/dj.png' },
-  cook_duck: { label: 'cook-duck', cost: 60, group: 'school', order: 6, sprite: '../assets/characters/cook.png', icon: '../assets/characters/cook.png' },
-  ninja_duck: { label: 'ninja-duck', cost: 70, group: 'battle', order: 7, sprite: '../assets/characters/ninja.png', icon: '../assets/characters/ninja.png' },
-  knight_duck: { label: 'knight-duck', cost: 85, group: 'battle', order: 8, sprite: '../assets/characters/knight.png', icon: '../assets/characters/knight.png' },
-  princess_duck: { label: 'princess-duck', cost: 95, group: 'battle', order: 9, sprite: '../assets/characters/princess.png', icon: '../assets/characters/princess.png' },
-  hacker_duck: { label: 'hacker-duck', cost: 110, group: 'legend', order: 10, sprite: '../assets/characters/hacker.png', icon: '../assets/characters/hacker.png' },
-  hero_duck: { label: 'hero-duck', cost: 125, group: 'legend', order: 11, sprite: '../assets/characters/hero-splash.png', icon: '../assets/characters/hero-splash.png' },
-  toast_duck: { label: 'toast-duck', cost: 135, group: 'legend', order: 12, sprite: '../assets/characters/duck-toast.png', icon: '../assets/characters/duck-toast.png' },
-  alien_duck: { label: 'alien-duck', cost: 150, group: 'legend', order: 13, sprite: '../assets/characters/alien.png', icon: '../assets/characters/alien.png' }
+  bread_duck: { label: 'bread-duck', cost: 120, group: 'starter', order: 2, sprite: '../assets/characters/bread.png', icon: '../assets/characters/bread.png' },
+  brainy_duck: { label: 'brainy-duck', cost: 180, group: 'school', order: 3, sprite: '../assets/characters/brainy-duck.png', icon: '../assets/characters/brainy-duck.png' },
+  business_duck: { label: 'business-duck', cost: 240, group: 'school', order: 4, sprite: '../assets/characters/business.png', icon: '../assets/characters/business.png' },
+  dj_duck: { label: 'dj-duck', cost: 300, group: 'school', order: 5, sprite: '../assets/characters/dj.png', icon: '../assets/characters/dj.png' },
+  cook_duck: { label: 'cook-duck', cost: 360, group: 'school', order: 6, sprite: '../assets/characters/cook.png', icon: '../assets/characters/cook.png' },
+  ninja_duck: { label: 'ninja-duck', cost: 440, group: 'battle', order: 7, sprite: '../assets/characters/ninja.png', icon: '../assets/characters/ninja.png' },
+  knight_duck: { label: 'knight-duck', cost: 520, group: 'battle', order: 8, sprite: '../assets/characters/knight.png', icon: '../assets/characters/knight.png' },
+  princess_duck: { label: 'princess-duck', cost: 620, group: 'battle', order: 9, sprite: '../assets/characters/princess.png', icon: '../assets/characters/princess.png' },
+  hacker_duck: { label: 'hacker-duck', cost: 760, group: 'legend', order: 10, sprite: '../assets/characters/hacker.png', icon: '../assets/characters/hacker.png' },
+  hero_duck: { label: 'hero-duck', cost: 900, group: 'legend', order: 11, sprite: '../assets/characters/hero-splash.png', icon: '../assets/characters/hero-splash.png' },
+  toast_duck: { label: 'toast-duck', cost: 1050, group: 'legend', order: 12, sprite: '../assets/characters/duck-toast.png', icon: '../assets/characters/duck-toast.png' },
+  alien_duck: { label: 'alien-duck', cost: 1250, group: 'legend', order: 13, sprite: '../assets/characters/alien.png', icon: '../assets/characters/alien.png' }
 };
 
 const characterShopGroups = [
@@ -307,6 +307,14 @@ const endingSpriteSheet = new Image();
 endingSpriteSheet.src = '../assets/characters/spritesheet-story.png';
 const COIN_PARTICLE_ASSET = '../assets/coin.svg';
 const HINT_COIN_COST = 100;
+const BASE_CHAPTER_COIN_REWARD = 100;
+const CHAPTER_COIN_MULTIPLIER = {
+  1: 1,
+  2: 1,
+  3: 2,
+  4: 3,
+  5: 4
+};
 const DEFAULT_HINT_TEXT = 'Hints are hidden. Spend 100 coins to buy one bread clue for this challenge.';
 const EFFECT_COLORS = ['#f8d25b', '#ff8a78', '#8fd9ff', '#9fe39b', '#f4e9d1', '#ffc17e'];
 const MAX_LIVES = 3;
@@ -377,6 +385,32 @@ function playSfx(name, options = {}) {
 
 function playClickSfx(options = {}) {
   playSfx('click', { rate: options.rate ?? 1, boost: options.boost ?? 0.62 });
+}
+
+function warmupCharacterSprites() {
+  const preloadSet = new Set();
+  Object.values(wardrobeStyles).forEach((style) => {
+    if (style.sprite) preloadSet.add(style.sprite);
+    if (style.icon) preloadSet.add(style.icon);
+  });
+  Object.values(duckReactions).forEach((reaction) => {
+    if (Array.isArray(reaction)) {
+      reaction.forEach((src) => {
+        if (src) preloadSet.add(src);
+      });
+      return;
+    }
+    if (reaction) preloadSet.add(reaction);
+  });
+  Object.values(feedbackIcons).forEach((iconSrc) => {
+    if (iconSrc) preloadSet.add(iconSrc);
+  });
+
+  preloadSet.forEach((src) => {
+    const img = new Image();
+    img.decoding = 'async';
+    img.src = src;
+  });
 }
 
 function randomBetween(min, max) {
@@ -1279,7 +1313,10 @@ function finishChapter() {
   const score = roundAttempts > 0 ? Math.round((roundCorrect / roundAttempts) * 100) : 0;
   const masteryBonus = score === 100 ? 25 : score >= 90 ? 15 : 0;
   const chapterBonus = currentChapter * 8;
-  const earned = Math.max(30, roundCorrect * 10 + masteryBonus + chapterBonus);
+  const performanceEarned = roundCorrect * 10 + masteryBonus + chapterBonus;
+  const chapterMultiplier = CHAPTER_COIN_MULTIPLIER[currentChapter] || 1;
+  const guaranteedChapterReward = BASE_CHAPTER_COIN_REWARD * chapterMultiplier;
+  const earned = Math.max(guaranteedChapterReward, performanceEarned);
 
   coins += earned;
   bondXp += 25;
@@ -1837,6 +1874,7 @@ if (duckName) {
 }
 
 if (!ownedStyles.includes('idle')) ownedStyles.push('idle');
+warmupCharacterSprites();
 applyStyle(selectedStyle);
 renderStyleShop();
 loadChapter(currentChapter, { withCinematic: true });

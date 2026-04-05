@@ -1416,6 +1416,131 @@ body::before {
   }
 }
 
+@media (max-width: 420px) {
+  .topbar {
+    left: max(6px, env(safe-area-inset-left));
+    right: max(6px, env(safe-area-inset-right));
+    gap: 4px;
+  }
+
+  .brand {
+    width: 100%;
+    font-size: clamp(12px, 4.2vw, 15px);
+    line-height: 1.05;
+  }
+
+  .topbar-actions {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 4px;
+  }
+
+  .ui-btn {
+    min-width: 0;
+    padding: 5px 4px;
+    font-size: clamp(10px, 3.3vw, 12px);
+    white-space: nowrap;
+  }
+
+  .hud {
+    left: max(6px, env(safe-area-inset-left));
+    right: max(6px, env(safe-area-inset-right));
+    top: calc(max(6px, env(safe-area-inset-top)) + 88px);
+    gap: 4px;
+  }
+
+  .hud-item {
+    min-width: 0;
+    padding: 4px 6px;
+    font-size: clamp(11px, 3.6vw, 13px);
+  }
+
+  .bond-meter {
+    height: 9px;
+  }
+
+  #game-stage {
+    padding-top: calc(max(6px, env(safe-area-inset-top)) + 226px);
+    gap: 6px;
+  }
+
+  #duck-zone {
+    padding: 8px 8px;
+    gap: 6px;
+  }
+
+  .duck-pond {
+    border-radius: 18px;
+    padding: 6px;
+  }
+
+  #duck-character {
+    max-height: min(27dvh, 200px);
+  }
+
+  #duck-name {
+    font-size: clamp(19px, 6.1vw, 26px);
+  }
+
+  .duck-dialogue {
+    width: 100%;
+    min-height: 44px;
+    font-size: clamp(12px, 3.7vw, 16px);
+    padding: 8px 10px;
+  }
+
+  #challenge-zone {
+    padding: 7px 6px;
+    gap: 6px;
+  }
+
+  #chapter-title {
+    font-size: clamp(20px, 5.5vw, 27px);
+  }
+
+  #progress-text {
+    font-size: clamp(16px, 4.8vw, 22px);
+  }
+
+  .chapter-strip {
+    gap: 4px;
+  }
+
+  .chapter-pill {
+    font-size: clamp(12px, 3.7vw, 14px);
+    padding: 5px 7px;
+  }
+
+  .hint-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .hint-toggle-btn {
+    width: 100%;
+  }
+
+  .hint-status {
+    font-size: clamp(11px, 3.1vw, 13px);
+  }
+
+  .mode-panel {
+    gap: 7px;
+    padding: 8px;
+  }
+
+  .mode-title {
+    font-size: clamp(13px, 3.9vw, 15px);
+  }
+
+  .mode-snippet,
+  .mode-option {
+    font-size: clamp(12px, 3.5vw, 14px);
+    padding: 8px 9px;
+  }
+}
+
 @media (max-height: 560px) and (orientation: landscape) {
   .topbar {
     top: max(6px, env(safe-area-inset-top));
