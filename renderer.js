@@ -619,80 +619,77 @@ if (volumeButton && bgAudio) {
   });
 }
 
-const GOOGLE_CLIENT_ID = '919060356678-3ol8je1dp95k0fjchaeaeqsemgvoejte.apps.googleusercontent.com';
-const REDIRECT_URI = `${window.location.origin}/oauth2callback.html`;
-const SCOPES = 'openid profile email';
+const FIREBASE_CONFIG = {
+  apiKey: 'AIzaSyCEsQGftz10XTJWSObhayCc4CIk0GgWRnY',
+  authDomain: 'storied-storm-418509.firebaseapp.com',
+  projectId: 'storied-storm-418509',
+  storageBucket: 'storied-storm-418509.firebasestorage.app',
+  messagingSenderId: '597008183375',
+  appId: '1:597008183375:web:328ef3019dd80d603b3a3a',
+  measurementId: 'G-87Q1HHZ8XP'
+};
 
-function buildGoogleAuthUrl() {
-  const base = 'https://accounts.google.com/o/oauth2/v2/auth';
-  const params = new URLSearchParams({
-    client_id: GOOGLE_CLIENT_ID,
-    redirect_uri: REDIRECT_URI,
-    response_type: 'token',
-    scope: SCOPES,
-    prompt: 'select_account'
-  });
+let firebaseAuthInitPromise = null;
+let firebaseAuth = null;
+let firebaseProvider = null;
+let firebaseSignInWithPopup = null;
 
-  return `${base}?${params.toString()}`;
-}
+function initFirebaseAuth() {
+  if (firebaseAuthInitPromise) return firebaseAuthInitPromise;
 
-function openAuthPopup(url, name = 'googleAuth', width = 500, height = 650) {
-  const left = (screen.width - width) / 2;
-  const top = (screen.height - height) / 2;
-  const opts = `width=${width},height=${height},top=${top},left=${left}`;
-  const popup = window.open(url, name, opts);
+  firebaseAuthInitPromise = Promise.all([
+    import('https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js'),
+    import('https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js')
+  ])
+    .then(async ([firebaseAppModule, firebaseAuthModule]) => {
+      const app = firebaseAppModule.initializeApp(FIREBASE_CONFIG);
+      firebaseAuth = firebaseAuthModule.getAuth(app);
+      firebaseProvider = new firebaseAuthModule.GoogleAuthProvider();
+      firebaseProvider.setCustomParameters({ prompt: 'select_account' });
+      firebaseSignInWithPopup = firebaseAuthModule.signInWithPopup;
+      await firebaseAuthModule.setPersistence(firebaseAuth, firebaseAuthModule.browserLocalPersistence);
+      return {
+        auth: firebaseAuth,
+        provider: firebaseProvider,
+        signInWithPopup: firebaseSignInWithPopup
+      };
+    })
+    .catch((error) => {
+      firebaseAuthInitPromise = null;
+      throw error;
+    });
 
-  return new Promise((resolve, reject) => {
-    if (!popup) return reject(new Error('Popup blocked'));
-
-    const timer = setInterval(() => {
-      if (popup.closed) {
-        clearInterval(timer);
-        reject(new Error('Popup closed'));
-      }
-    }, 500);
-
-    function onMessage(event) {
-      if (event.origin !== window.location.origin) return;
-      clearInterval(timer);
-      window.removeEventListener('message', onMessage);
-      resolve(event.data);
-    }
-
-    window.addEventListener('message', onMessage);
-  });
+  return firebaseAuthInitPromise;
 }
 
 async function handleGoogleSignIn() {
   try {
-    const authUrl = buildGoogleAuthUrl();
-    const result = await openAuthPopup(authUrl);
+    const authBundle = await initFirebaseAuth();
+    const result = await authBundle.signInWithPopup(authBundle.auth, authBundle.provider);
+    const user = result.user;
 
-    const hash = result.hash || '';
-    const params = new URLSearchParams(hash.replace(/^#/, ''));
-    const accessToken = params.get('access_token');
-
-    if (!accessToken) {
-      console.warn('Auth result', result);
-      return;
-    }
-
-    const response = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
-      headers: { Authorization: `Bearer ${accessToken}` }
-    });
-
-    if (!response.ok) throw new Error('Failed to fetch Google profile');
-
-    const profile = await response.json();
-
-    console.log('Signed in user', profile);
     if (playerNameInput) {
-      playerNameInput.value = profile.given_name || profile.name || '';
+      const preferredName = user.displayName || user.email || '';
+      playerNameInput.value = preferredName.split(' ')[0] || preferredName;
     }
 
-    alert(`Signed in as ${profile.email || profile.name}`);
+    try {
+      localStorage.setItem(
+        'googleProfile',
+        JSON.stringify({
+          uid: user.uid,
+          name: user.displayName || '',
+          email: user.email || '',
+          photoURL: user.photoURL || ''
+        })
+      );
+    } catch (error) {
+    }
+
+    alert(`Signed in as ${user.email || user.displayName || 'Google user'}`);
   } catch (error) {
     console.error('Google sign-in error', error);
+    alert('Google sign-in failed. Please check Firebase authorized domains and try again.');
   }
 }
 
