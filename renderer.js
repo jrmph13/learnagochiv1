@@ -627,7 +627,13 @@ if (volumeButton && bgAudio) {
 // Google sign-in button
 
 const GOOGLE_CLIENT_ID = '898335762947-8vavg6euu2rcq8ui2nel2n4pl2kl0g54.apps.googleusercontent.com';
-const REDIRECT_URI = 'http://localhost:5500/oauth2callback.html';
+const REDIRECT_URI = (() => {
+  try {
+    return new URL('oauth2callback.html', window.location.href).toString();
+  } catch {
+    return `${window.location.origin}/oauth2callback.html`;
+  }
+})();
 const SCOPES = 'openid profile email';
 
 function buildGoogleAuthUrl() {

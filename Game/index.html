@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Learnagochi Game</title>
-  <link rel="stylesheet" href="style.css?v=20260405a" />
+  <link rel="stylesheet" href="style.css?v=20260405b" />
 </head>
 <body>
   <img src="../assets/river-ils.png" alt="Pond background" id="main-bg" />
@@ -50,7 +50,11 @@
         <p id="chapter-story-hook">Story: You and your duck begin your first coding lesson beside the pond.</p>
         <p id="chapter-learning-goal">Goal: Identify whether each value is string, bool, or int.</p>
       </div>
-      <p id="programming-tag">Drag the value into the correct programming data type box.</p>
+      <div class="hint-controls">
+        <button id="hint-toggle-btn" class="ui-btn hint-toggle-btn" type="button">Unlock Hint (-8 coins)</button>
+        <span id="hint-status" class="hint-status">Hints are hidden.</span>
+      </div>
+      <p id="programming-tag">Hints are hidden. Use coins to unlock a clue for this challenge.</p>
 
       <div id="value-container"></div>
 
@@ -156,6 +160,9 @@
   <aside id="ending-panel" class="overlay" aria-hidden="true">
     <div class="modal ending">
       <h2 id="ending-title">Final Story</h2>
+      <div class="ending-canvas-wrap">
+        <canvas id="ending-canvas" class="ending-canvas" aria-label="Ending story animation"></canvas>
+      </div>
       <p id="ending-scene-step">Scene 13 / 16</p>
       <p id="ending-line">Eppy walks with you, stronger than ever.</p>
       <p id="ending-subline">Your rescue became a learning journey.</p>
@@ -184,6 +191,6 @@
     </div>
   </aside>
 
-  <script src="main.js?v=20260405a"></script>
+  <script src="main.js?v=20260405b"></script>
 </body>
 </html>

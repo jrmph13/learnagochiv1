@@ -12,6 +12,8 @@ const chapterChip = document.getElementById('chapter-chip');
 const chapterStoryHook = document.getElementById('chapter-story-hook');
 const chapterLearningGoal = document.getElementById('chapter-learning-goal');
 const programmingTag = document.getElementById('programming-tag');
+const hintToggleBtn = document.getElementById('hint-toggle-btn');
+const hintStatus = document.getElementById('hint-status');
 
 const coinsCount = document.getElementById('coins-count');
 const bondLevel = document.getElementById('bond-level');
@@ -43,6 +45,8 @@ const endingLine = document.getElementById('ending-line');
 const endingSubline = document.getElementById('ending-subline');
 const endingNextBtn = document.getElementById('ending-next-btn');
 const endingHomeBtn = document.getElementById('ending-home-btn');
+const endingCanvas = document.getElementById('ending-canvas');
+const endingCanvasContext = endingCanvas ? endingCanvas.getContext('2d') : null;
 
 const chapterCinematic = document.getElementById('chapter-cinematic');
 const cinematicChapter = document.getElementById('cinematic-chapter');
@@ -211,21 +215,25 @@ const chapters = {
 const endingScenes = [
   {
     scene: 13,
+    frameIndex: 12,
     line: 'Scene 13: Eppy returns to the pond with a calm, brave smile.',
     subline: 'You both remember how the rescue began.'
   },
   {
     scene: 14,
+    frameIndex: 13,
     line: 'Scene 14: Eppy rests beside your notes after all coding lessons.',
     subline: 'Practice, patience, and care built real progress.'
   },
   {
     scene: 15,
+    frameIndex: 14,
     line: 'Scene 15: Eppy stands proud as your learning companion.',
     subline: 'From injured duck to confident guide.'
   },
   {
     scene: 16,
+    frameIndex: 15,
     line: 'Scene 16: The End.',
     subline: 'A story of rescue, recovery, and programming growth with Eppy.'
   }
@@ -261,12 +269,25 @@ let activeValue = null;
 let dragState = null;
 let dialogueTimer = null;
 let reactionTimer = null;
+let hintVisible = false;
+let activeHintKey = null;
+const unlockedHintKeys = new Set();
 
 let cinematicPlaying = false;
 let cinematicSkipRequested = false;
 let cinematicRunId = 0;
 let chapterLoadToken = 0;
 let endingSceneIndex = 0;
+let endingFrameIndex = endingScenes[0]?.frameIndex ?? 12;
+let endingTransitionToken = 0;
+
+const ENDING_SHEET_COLUMNS = 4;
+const ENDING_SHEET_ROWS = 4;
+const ENDING_TRANSITION_MS = 480;
+const endingSpriteSheet = new Image();
+endingSpriteSheet.src = '../assets/characters/spritesheet-story.png';
+const HINT_COIN_COST = 8;
+const DEFAULT_HINT_TEXT = 'Hints are hidden. Use coins to unlock a clue for this challenge.';
 
 function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
@@ -275,6 +296,127 @@ function clamp(value, min, max) {
 function wait(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
+
+function clampEndingFrame(value) {
+  return clamp(value, 0, ENDING_SHEET_COLUMNS * ENDING_SHEET_ROWS - 1);
+}
+
+function ensureEndingCanvasResolution() {
+  if (!endingCanvas || !endingCanvasContext) return false;
+  const rect = endingCanvas.getBoundingClientRect();
+  if (rect.width < 2 || rect.height < 2) return false;
+
+  const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+  const targetWidth = Math.round(rect.width * pixelRatio);
+  const targetHeight = Math.round(rect.height * pixelRatio);
+
+  if (endingCanvas.width !== targetWidth || endingCanvas.height !== targetHeight) {
+    endingCanvas.width = targetWidth;
+    endingCanvas.height = targetHeight;
+    endingCanvasContext.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+    endingCanvasContext.imageSmoothingEnabled = true;
+    endingCanvasContext.imageSmoothingQuality = 'high';
+  }
+
+  return true;
+}
+
+function drawEndingFrame(frameIndex, alpha = 1) {
+  if (!endingCanvas || !endingCanvasContext) return;
+  if (!ensureEndingCanvasResolution()) return;
+  if (!endingSpriteSheet.complete || endingSpriteSheet.naturalWidth === 0) return;
+
+  const safeFrame = clampEndingFrame(frameIndex);
+  const frameWidth = endingSpriteSheet.naturalWidth / ENDING_SHEET_COLUMNS;
+  const frameHeight = endingSpriteSheet.naturalHeight / ENDING_SHEET_ROWS;
+  const column = safeFrame % ENDING_SHEET_COLUMNS;
+  const row = Math.floor(safeFrame / ENDING_SHEET_COLUMNS);
+  const sx = Math.round(column * frameWidth);
+  const sy = Math.round(row * frameHeight);
+
+  endingCanvasContext.save();
+  endingCanvasContext.globalAlpha = clamp(alpha, 0, 1);
+  endingCanvasContext.drawImage(
+    endingSpriteSheet,
+    sx,
+    sy,
+    Math.round(frameWidth),
+    Math.round(frameHeight),
+    0,
+    0,
+    endingCanvas.clientWidth,
+    endingCanvas.clientHeight
+  );
+  endingCanvasContext.restore();
+}
+
+function renderEndingFrame(frameIndex) {
+  if (!endingCanvas || !endingCanvasContext) return;
+  if (!ensureEndingCanvasResolution()) return;
+
+  endingFrameIndex = clampEndingFrame(frameIndex);
+  endingCanvasContext.clearRect(0, 0, endingCanvas.clientWidth, endingCanvas.clientHeight);
+  drawEndingFrame(endingFrameIndex, 1);
+}
+
+function animateEndingFrameTransition(nextFrame, duration = ENDING_TRANSITION_MS) {
+  if (!endingCanvas || !endingCanvasContext) {
+    endingFrameIndex = clampEndingFrame(nextFrame);
+    return Promise.resolve();
+  }
+
+  const targetFrame = clampEndingFrame(nextFrame);
+  const fromFrame = clampEndingFrame(endingFrameIndex);
+
+  if (fromFrame === targetFrame || duration <= 0 || !endingSpriteSheet.complete || endingSpriteSheet.naturalWidth === 0) {
+    renderEndingFrame(targetFrame);
+    return Promise.resolve();
+  }
+
+  endingTransitionToken += 1;
+  const token = endingTransitionToken;
+
+  return new Promise((resolve) => {
+    const startAt = performance.now();
+
+    const step = (timestamp) => {
+      if (token !== endingTransitionToken) {
+        resolve();
+        return;
+      }
+
+      const elapsed = timestamp - startAt;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = progress < 0.5
+        ? 2 * progress * progress
+        : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+
+      if (ensureEndingCanvasResolution()) {
+        endingCanvasContext.clearRect(0, 0, endingCanvas.clientWidth, endingCanvas.clientHeight);
+        drawEndingFrame(fromFrame, 1 - eased);
+        drawEndingFrame(targetFrame, eased);
+      }
+
+      if (progress < 1) {
+        requestAnimationFrame(step);
+        return;
+      }
+
+      endingFrameIndex = targetFrame;
+      resolve();
+    };
+
+    requestAnimationFrame(step);
+  });
+}
+
+endingSpriteSheet.addEventListener('load', () => {
+  renderEndingFrame(endingFrameIndex);
+});
+
+window.addEventListener('resize', () => {
+  renderEndingFrame(endingFrameIndex);
+});
 
 function persistState() {
   localStorage.setItem('learnagochiCurrentChapter', String(currentChapter));
@@ -343,6 +485,7 @@ function updateHud() {
   if (bondLevel) bondLevel.textContent = String(level);
   if (bondFill) bondFill.style.width = `${progress}%`;
   if (chapterChip) chapterChip.textContent = `Chapter ${currentChapter} / ${totalChapters}`;
+  renderHintUi();
 }
 
 function updateProgress() {
@@ -506,6 +649,86 @@ function getBoxFromPoint(x, y) {
   return null;
 }
 
+function currentQuestionKey() {
+  return `${currentChapter}:${questionIndex}`;
+}
+
+function buildNonRevealingHint(value) {
+  const literal = String(value ?? '').trim();
+  const hasWrappingQuotes = literal.length >= 2 && literal.startsWith('"') && literal.endsWith('"');
+  const inner = hasWrappingQuotes ? literal.slice(1, -1) : literal;
+  const looksKeyword = /^(true|false)$/i.test(inner);
+  const looksSignedInteger = /^-?\d+$/.test(inner);
+  const hasSymbols = /[_:\- ]/.test(inner);
+  const clauses = [];
+
+  clauses.push('Clue protocol: classify by notation first, meaning second.');
+  clauses.push(hasWrappingQuotes
+    ? 'Delimiter check: token is enclosed by paired quote delimiters.'
+    : 'Delimiter check: token is exposed, with no quote enclosure.');
+
+  if (looksKeyword) {
+    clauses.push('Keyword warning: this lexeme can shift class when wrapped versus unwrapped.');
+  } else if (looksSignedInteger) {
+    clauses.push('Numeric warning: digit-only lexemes still depend on delimiter context.');
+  } else if (hasSymbols) {
+    clauses.push('Symbol signal: punctuation/spacing belongs to the token, not to its container.');
+  } else {
+    clauses.push('Fallback: inspect literal form exactly, including casing and boundaries.');
+  }
+
+  clauses.push('Decision rule: prioritize raw surface form over interpretation.');
+  return clauses.join(' ');
+}
+
+function renderHintUi() {
+  const unlocked = unlockedHintKeys.has(currentQuestionKey());
+  const canAfford = coins >= HINT_COIN_COST;
+
+  if (hintToggleBtn) {
+    if (unlocked) {
+      hintToggleBtn.disabled = false;
+      hintToggleBtn.textContent = hintVisible ? 'Hide Hint' : 'Show Hint';
+    } else {
+      hintToggleBtn.disabled = !canAfford;
+      hintToggleBtn.textContent = `Unlock Hint (-${HINT_COIN_COST} coins)`;
+    }
+  }
+
+  if (hintStatus) {
+    if (unlocked) {
+      hintStatus.textContent = hintVisible
+        ? 'Hint unlocked for this challenge.'
+        : 'Hint unlocked. Toggle to view it again.';
+    } else if (canAfford) {
+      hintStatus.textContent = `Hint locked. Spend ${HINT_COIN_COST} coins to unlock this clue.`;
+    } else {
+      hintStatus.textContent = `Need ${Math.max(0, HINT_COIN_COST - coins)} more coins to unlock hint.`;
+    }
+  }
+}
+
+function renderProgrammingHint(question) {
+  if (!programmingTag) return;
+  const unlocked = unlockedHintKeys.has(currentQuestionKey());
+
+  if (hintVisible && unlocked && question) {
+    programmingTag.textContent = `Hint: ${buildNonRevealingHint(question.value)}`;
+    return;
+  }
+
+  programmingTag.textContent = DEFAULT_HINT_TEXT;
+}
+
+function syncHintStateForCurrentQuestion() {
+  const key = currentQuestionKey();
+  if (activeHintKey !== key) {
+    activeHintKey = key;
+    hintVisible = false;
+  }
+  renderHintUi();
+}
+
 function spawnValue() {
   if (!valueContainer || chapterCompleted || cinematicPlaying) return;
 
@@ -514,9 +737,8 @@ function spawnValue() {
   const question = currentChapterData().questions[questionIndex];
   if (!question) return;
 
-  if (programmingTag) {
-    programmingTag.textContent = question.hint ? `Hint: ${question.hint}` : 'Drag into the correct box.';
-  }
+  syncHintStateForCurrentQuestion();
+  renderProgrammingHint(question);
 
   const valueEl = document.createElement('div');
   valueEl.className = 'draggable-value';
@@ -714,11 +936,20 @@ function closeOverlay(overlay) {
   if (!overlay) return;
   overlay.classList.remove('open');
   overlay.setAttribute('aria-hidden', 'true');
+  if (overlay === endingPanel) {
+    endingTransitionToken += 1;
+  }
 }
 
-function renderEndingScene() {
+async function renderEndingScene({ animateFrame = true } = {}) {
   const current = endingScenes[endingSceneIndex] || endingScenes[endingScenes.length - 1];
   if (!current) return;
+
+  if (animateFrame) {
+    await animateEndingFrameTransition(current.frameIndex);
+  } else {
+    renderEndingFrame(current.frameIndex);
+  }
 
   if (endingTitle) {
     endingTitle.textContent = endingSceneIndex === endingScenes.length - 1
@@ -735,16 +966,16 @@ function renderEndingScene() {
 
 function openEndingStory() {
   endingSceneIndex = 0;
-  renderEndingScene();
+  renderEndingScene({ animateFrame: false });
   openOverlay(endingPanel);
   setDialogue('Final story unlocked. You finished all chapters!', 2600);
   setDuckReaction('complete', 1100);
 }
 
-function advanceEndingStory() {
+async function advanceEndingStory() {
   if (endingSceneIndex < endingScenes.length - 1) {
     endingSceneIndex += 1;
-    renderEndingScene();
+    await renderEndingScene({ animateFrame: true });
     return;
   }
 
@@ -849,6 +1080,37 @@ if (closeJournal) closeJournal.addEventListener('click', () => closeOverlay(jour
   });
 });
 
+if (hintToggleBtn) {
+  hintToggleBtn.addEventListener('click', () => {
+    if (cinematicPlaying || chapterCompleted) return;
+    const question = currentChapterData().questions[questionIndex];
+    if (!question) return;
+
+    const key = currentQuestionKey();
+    const unlocked = unlockedHintKeys.has(key);
+
+    if (!unlocked) {
+      if (coins < HINT_COIN_COST) {
+        setDialogue(`Need ${HINT_COIN_COST - coins} more coins to unlock hint.`, 1400);
+        renderHintUi();
+        return;
+      }
+
+      coins -= HINT_COIN_COST;
+      unlockedHintKeys.add(key);
+      hintVisible = true;
+      setDialogue('Hint unlocked for this challenge.', 1200);
+      updateHud();
+      persistState();
+    } else {
+      hintVisible = !hintVisible;
+    }
+
+    renderHintUi();
+    renderProgrammingHint(question);
+  });
+}
+
 if (continueBtn) {
   continueBtn.addEventListener('click', () => {
     closeOverlay(assessmentPanel);
@@ -918,12 +1180,12 @@ async function loadChapter(chapterNumber, options = {}) {
 
   clearHighlights();
   clearDragState();
+  activeHintKey = null;
+  hintVisible = false;
   updateChapterMeta();
   updateSceneTheme(currentChapterData(), true);
   setDialogue(currentChapterData().cue);
-  if (programmingTag) {
-    programmingTag.textContent = 'Drag the value into the correct programming data type box.';
-  }
+  renderProgrammingHint();
 
   renderChapterStrip();
   renderChapterButtons();
