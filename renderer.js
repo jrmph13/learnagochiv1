@@ -13,7 +13,8 @@ const skipIntroButton = document.getElementById('skip-intro');
 const fadeOverlay = document.getElementById('fade-overlay');
 const loadingBarFill = document.querySelector('.loading-bar-fill');
 const loadingText = document.querySelector('.loading-text');
-const storySprite = document.getElementById('story-sprite');
+const storyCanvas = document.getElementById('story-canvas');
+const storyContext = storyCanvas ? storyCanvas.getContext('2d') : null;
 const storyStep = document.getElementById('story-step');
 const storyLine = document.getElementById('story-line');
 const storySubline = document.getElementById('story-subline');
@@ -38,6 +39,7 @@ const DEFAULT_TIMINGS = {
   loadingHold: 900,
   loadingMessageStep: 650,
   storyFrameStep: 4000,
+  storyFrameFade: 560,
   storyLastHold: 520
 };
 
@@ -50,6 +52,7 @@ const FAST_TIMINGS = {
   loadingHold: 900,
   loadingMessageStep: 650,
   storyFrameStep: 4000,
+  storyFrameFade: 560,
   storyLastHold: 520
 };
 
@@ -59,28 +62,45 @@ let nameSubmitLocked = false;
 let hasNavigatedToGame = false;
 let loadingMessageTimer = null;
 let introTimings = DEFAULT_TIMINGS;
+let storyImageReady = false;
+let storyRenderFrame = 0;
+let storyAnimationRunId = 0;
 
-const storyFramePositions = [
-  '0% 0%',
-  '33.333% 0%',
-  '66.666% 0%',
-  '100% 0%',
-  '0% 100%',
-  '33.333% 100%',
-  '66.666% 100%',
-  '100% 100%'
-];
+const STORY_SHEET_COLUMNS = 4;
+const STORY_SHEET_ROWS = 4;
+const STORY_TOTAL_FRAMES = STORY_SHEET_COLUMNS * STORY_SHEET_ROWS;
+const storyImage = new Image();
+storyImage.src = 'assets/characters/spritesheet-story.png';
 
 const storyNarrative = [
-  { line: 'You found a small injured duck in a rainy pond.', subline: 'Frame 1: It looked weak and needed help.' },
-  { line: 'You stayed and watched over the duck carefully.', subline: 'Frame 2: You knew you had to save it.' },
-  { line: 'You gently reached in and lifted the duck to safety.', subline: 'Frame 3: Rescue started.' },
-  { line: 'You brought the duck out of the water and dried it.', subline: 'Frame 4: The duck was safe.' },
-  { line: 'You let it rest and recover in a warm basket.', subline: 'Frame 5: Recovery phase.' },
-  { line: 'You treated the duck and gave proper care.', subline: 'Frame 6: Healing and trust.' },
-  { line: 'You fed it and gave it love every day.', subline: 'Frame 7: Bond growing stronger.' },
-  { line: 'Now this bread-faced duck will be your learning guidance and companion.', subline: 'Frame 8: Ready to learn with you.' }
+  { line: 'In a rainy pond, you spotted a tiny injured duck.', subline: 'Scene 1: Rescue begins.' },
+  { line: 'You rushed closer and saw it struggling to float.', subline: 'Scene 2: You decided to help.' },
+  { line: 'With steady hands, you lifted the duck to safety.', subline: 'Scene 3: Out of danger.' },
+  { line: 'You carried it home and kept it warm and dry.', subline: 'Scene 4: First care.' },
+  { line: 'You cleaned the wounds and changed its bandage.', subline: 'Scene 5: Recovery day.' },
+  { line: 'Little by little, the duck regained its strength.', subline: 'Scene 6: Healing progress.' },
+  { line: 'You wrapped a soft scarf and welcomed it home.', subline: 'Scene 7: Bond grows.' },
+  { line: 'Now with bread on its head, Eppy smiles at you.', subline: 'Scene 8: A new companion.' },
+  { line: 'Eppy invites you to explore and learn together.', subline: 'Scene 9: Learning journey starts.' },
+  { line: 'You open coding lessons and practice every day.', subline: 'Scene 10: Skill building.' },
+  { line: 'After each challenge, Eppy rests beside you.', subline: 'Scene 11: Trust and comfort.' },
+  { line: 'You both care for the pond and grow new ideas.', subline: 'Scene 12: Consistent progress.' },
+  { line: 'Returning to the pond, Eppy stands strong now.', subline: 'Scene 13: Full recovery.' },
+  { line: 'Eppy reflects: "Grateful... learned so much."', subline: 'Scene 14: Milestone moment.' },
+  { line: 'Your mascot guide is ready for every new chapter.', subline: 'Scene 15: Motivation unlocked.' },
+  { line: 'A story of rescue, recovery, and learning with Eppy.', subline: 'Scene 16: Your coding companion.' }
 ];
+
+const STORY_FRAME_COUNT = Math.min(STORY_TOTAL_FRAMES, storyNarrative.length);
+
+if (storyImage.complete && storyImage.naturalWidth > 0) {
+  storyImageReady = true;
+}
+
+storyImage.addEventListener('load', () => {
+  storyImageReady = true;
+  paintStoryFrameBlend(null, storyRenderFrame, 1);
+});
 
 function wait(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -139,34 +159,186 @@ function restartLoadingBar() {
 }
 
 function stopStoryAnimation() {
-  // Story now plays as a one-pass async sequence.
+  storyAnimationRunId += 1;
+}
+
+function easeInOutQuad(value) {
+  if (value < 0.5) return 2 * value * value;
+  return 1 - Math.pow(-2 * value + 2, 2) / 2;
+}
+
+function clampStoryFrame(frameIndex) {
+  return Math.min(Math.max(frameIndex, 0), STORY_FRAME_COUNT - 1);
+}
+
+function ensureStoryCanvasResolution() {
+  if (!storyCanvas || !storyContext) return false;
+
+  const rect = storyCanvas.getBoundingClientRect();
+  if (rect.width < 2 || rect.height < 2) return false;
+
+  const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+  const targetWidth = Math.round(rect.width * pixelRatio);
+  const targetHeight = Math.round(rect.height * pixelRatio);
+
+  if (storyCanvas.width !== targetWidth || storyCanvas.height !== targetHeight) {
+    storyCanvas.width = targetWidth;
+    storyCanvas.height = targetHeight;
+    storyContext.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+    storyContext.imageSmoothingEnabled = true;
+    storyContext.imageSmoothingQuality = 'high';
+  }
+
+  return true;
+}
+
+function clearStoryCanvas() {
+  if (!storyCanvas || !storyContext) return;
+  if (!ensureStoryCanvasResolution()) return;
+  storyContext.clearRect(0, 0, storyCanvas.clientWidth, storyCanvas.clientHeight);
+}
+
+function drawStoryFrame(frameIndex, alpha = 1) {
+  if (!storyCanvas || !storyContext || !storyImageReady) return;
+  if (!ensureStoryCanvasResolution()) return;
+
+  const safeFrame = clampStoryFrame(frameIndex);
+  const frameWidth = storyImage.naturalWidth / STORY_SHEET_COLUMNS;
+  const frameHeight = storyImage.naturalHeight / STORY_SHEET_ROWS;
+  const column = safeFrame % STORY_SHEET_COLUMNS;
+  const row = Math.floor(safeFrame / STORY_SHEET_COLUMNS);
+  const sx = Math.round(column * frameWidth);
+  const sy = Math.round(row * frameHeight);
+
+  storyContext.save();
+  storyContext.globalAlpha = Math.min(Math.max(alpha, 0), 1);
+  storyContext.drawImage(
+    storyImage,
+    sx,
+    sy,
+    Math.round(frameWidth),
+    Math.round(frameHeight),
+    0,
+    0,
+    storyCanvas.clientWidth,
+    storyCanvas.clientHeight
+  );
+  storyContext.restore();
+}
+
+function paintStoryFrameBlend(previousFrame, nextFrame, blendProgress) {
+  if (!storyCanvas || !storyContext || !storyImageReady) return;
+
+  const safeBlend = Math.min(Math.max(blendProgress, 0), 1);
+  clearStoryCanvas();
+
+  if (typeof previousFrame === 'number' && safeBlend < 1) {
+    drawStoryFrame(previousFrame, 1 - safeBlend);
+  }
+
+  drawStoryFrame(nextFrame, safeBlend);
+  storyRenderFrame = clampStoryFrame(nextFrame);
+}
+
+async function waitForStoryImageReady(timeoutMs = 6000) {
+  if (storyImageReady) return true;
+
+  return new Promise((resolve) => {
+    let settled = false;
+
+    const finish = (isReady) => {
+      if (settled) return;
+      settled = true;
+      resolve(isReady);
+    };
+
+    const onLoad = () => {
+      storyImageReady = true;
+      finish(true);
+    };
+
+    const onError = () => finish(false);
+
+    storyImage.addEventListener('load', onLoad, { once: true });
+    storyImage.addEventListener('error', onError, { once: true });
+
+    setTimeout(() => finish(false), timeoutMs);
+  });
 }
 
 function setStoryNarrativeByFrame(frameIndex) {
   if (!storyLine || !storySubline) return;
-  const safeIndex = Math.min(Math.max(frameIndex, 0), storyNarrative.length - 1);
-  if (storyStep) storyStep.textContent = `Scene ${safeIndex + 1} / ${storyNarrative.length}`;
+  const safeIndex = clampStoryFrame(frameIndex);
+  if (storyStep) storyStep.textContent = `Scene ${safeIndex + 1} / ${STORY_FRAME_COUNT}`;
   storyLine.textContent = storyNarrative[safeIndex].line;
   storySubline.textContent = storyNarrative[safeIndex].subline;
 }
 
-async function playStorySequenceOnce() {
-  if (!storySprite) return;
+async function animateStoryTransition(previousFrame, nextFrame, runId) {
+  const duration = Math.max(0, introTimings.storyFrameFade);
 
-  for (let frameIndex = 0; frameIndex < storyFramePositions.length; frameIndex += 1) {
-    if (skipRequested) return;
-
-    storySprite.style.backgroundPosition = storyFramePositions[frameIndex];
-    setStoryNarrativeByFrame(frameIndex);
-
-    if (frameIndex < storyFramePositions.length - 1) {
-      await waitOrSkip(introTimings.storyFrameStep);
-    }
+  if (duration <= 0) {
+    paintStoryFrameBlend(previousFrame, nextFrame, 1);
+    return true;
   }
 
-  // Hold last frame briefly, then continue to loading.
-  await waitOrSkip(introTimings.storyLastHold);
+  return new Promise((resolve) => {
+    const startedAt = performance.now();
+
+    const step = (now) => {
+      if (skipRequested || runId !== storyAnimationRunId) {
+        resolve(false);
+        return;
+      }
+
+      const elapsed = now - startedAt;
+      const progress = Math.min(elapsed / duration, 1);
+      paintStoryFrameBlend(previousFrame, nextFrame, easeInOutQuad(progress));
+
+      if (progress < 1) {
+        requestAnimationFrame(step);
+        return;
+      }
+
+      resolve(true);
+    };
+
+    requestAnimationFrame(step);
+  });
 }
+
+async function playStorySequenceOnce() {
+  if (!storyCanvas || !storyContext) return;
+  if (!storyImageReady) {
+    const ready = await waitForStoryImageReady();
+    if (!ready) return;
+  }
+
+  const runId = ++storyAnimationRunId;
+  paintStoryFrameBlend(null, 0, 0);
+
+  for (let frameIndex = 0; frameIndex < STORY_FRAME_COUNT; frameIndex += 1) {
+    if (skipRequested || runId !== storyAnimationRunId) return;
+
+    const previousFrame = frameIndex > 0 ? frameIndex - 1 : null;
+    setStoryNarrativeByFrame(frameIndex);
+    const didAnimate = await animateStoryTransition(previousFrame, frameIndex, runId);
+    if (!didAnimate) return;
+
+    const frameHold = frameIndex === STORY_FRAME_COUNT - 1
+      ? introTimings.storyLastHold
+      : Math.max(0, introTimings.storyFrameStep - introTimings.storyFrameFade);
+
+    if (frameHold > 0) {
+      await waitOrSkip(frameHold);
+    }
+  }
+}
+
+window.addEventListener('resize', () => {
+  if (!storyCanvas || !storyImageReady) return;
+  paintStoryFrameBlend(null, storyRenderFrame, 1);
+});
 
 function goToGame() {
   if (hasNavigatedToGame) return;
