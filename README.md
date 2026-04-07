@@ -26,6 +26,32 @@ Learnagochi focuses on lightweight, browser-based play. It is a static project (
   - `Final/FInalGame/index.html`
   - `Final/legacy-final-game/index.html`
 
+## UI Design
+The UI is intentionally minimal so the focus stays on the learning flow. It uses clear layout blocks, soft color choices, and readable typography to keep the interface comfortable for longer sessions. Navigation is kept simple so the player can move between screens without friction.
+
+### Layout Principles
+- Clear visual hierarchy for headings, content, and actions
+- Screen sections grouped by purpose (story, actions, feedback)
+- Consistent spacing and alignment to reduce visual noise
+
+### Visual Style
+- Clean, friendly presentation with cozy tone
+- Soft color palette to keep the mood calm
+- Focus on legibility and contrast for text and buttons
+
+### Interaction Design
+- Buttons and links are placed where they are expected
+- Primary actions are emphasized for quick decision-making
+- Feedback is short and direct to avoid distraction
+
+## Design Assets
+Artwork and scenes are stored in `assets/`. These include SVGs for background scenes and supporting visuals. The game uses these assets to reinforce the story-driven theme and to provide a playful atmosphere.
+
+## Design Notes
+- The scene artwork is used to set the tone for each chapter
+- The UI avoids heavy visual effects to keep performance light
+- Each build keeps the same overall design direction so that different versions still feel consistent
+
 ## How To Run
 This is a static project. You can run it in any modern browser.
 
