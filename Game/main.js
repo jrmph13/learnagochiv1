@@ -1885,11 +1885,9 @@ if (closePurchase) {
 if (purchaseCancelBtn) {
   purchaseCancelBtn.addEventListener('click', () => {
     playClickSfx();
-    const chapterNum = pendingPurchaseChapter;
     hidePurchaseModal();
-    if (chapterNum) {
-      loadChapter(chapterNum, { withCinematic: true });
-    }
+    // Play again should restart the *current* chapter to farm coins
+    loadChapter(currentChapter, { withCinematic: true });
   });
 }
 if (purchaseBuyBtn) {
