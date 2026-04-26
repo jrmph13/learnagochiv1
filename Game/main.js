@@ -1994,4 +1994,16 @@ if (!ownedStyles.includes('idle')) ownedStyles.push('idle');
 warmupCharacterSprites();
 applyStyle(selectedStyle);
 renderStyleShop();
+
+// Show chapter 5 purchase modal if not unlocked and player has coins
+if (currentChapter === 5 && !unlockedPremiumChapters.has(5) && coins >= 500) {
+  setTimeout(() => {
+    if (confirm('Chapter 5 is available! Buy it now for 500 coins?')) {
+      if (purchasePremiumChapter(5)) {
+        setDialogue('Chapter 5 unlocked! Enjoy the premium content!', 2000);
+      }
+    }
+  }, 1000);
+}
+
 loadChapter(currentChapter, { withCinematic: true });
