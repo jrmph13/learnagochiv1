@@ -157,72 +157,73 @@ const chapters = {
       { value: '730', type: 'int' }
     ]
   },
-  3: {
-    mode: 'find_error',
-    title: 'Chapter 3: Find the Error',
-    cue: 'Tap the line that contains the type error.',
-    storyHook: 'Story: Eppy checks your code and asks you to find broken lines.',
-    learningGoal: 'Goal: Detect incorrect value types inside small code snippets.',
-    sceneAsset: '../assets/scenes/scene-ch3-sunrise.svg',
-    sceneFx: 'sunrise',
-    cinematicLines: [
-      'Sunlight reaches the pond. Debug mission starts.',
-      'Find the wrong line before Eppy gets confused.'
-    ],
-    prepLabel: 'Preparing debug drills...',
-    questions: [
-      { prompt: 'Find the type error. Variable target: bool.', lines: ['const isReady = "true";', 'const points = 25;', 'const mascot = "Eppy";'], answerIndex: 0, hintText: 'Look for a boolean word wrapped in quotes.' },
-      { prompt: 'Find the type error. Variable target: int.', lines: ['let lives = "3";', 'let passed = true;', 'let levelName = "Pond";'], answerIndex: 0, hintText: 'An int should be a plain whole number.' },
-      { prompt: 'Find the type error. Variable target: string.', lines: ['const chapterName = 4;', 'const accuracy = 98;', 'const enabled = false;'], answerIndex: 0, hintText: 'A string label should use quote delimiters.' },
-      { prompt: 'Find the type error. Variable target: bool.', lines: ['let hasBadge = true;', 'let hasHint = "false";', 'let coins = 110;'], answerIndex: 1, hintText: 'Boolean values should not be quoted.' },
-      { prompt: 'Find the type error. Variable target: int.', lines: ['const totalCoins = 540;', 'const bestScore = "100";', 'const isCalm = true;'], answerIndex: 1, hintText: 'Quoted digits are not int literals.' },
-      { prompt: 'Find the type error. Variable target: string.', lines: ['let duckName = "Eppy";', 'let chapterCode = 503;', 'let chapterGoal = "Debug";'], answerIndex: 1, hintText: 'Name-like values should be textual labels.' }
-    ]
-  },
-  4: {
-    mode: 'fill_missing',
-    title: 'Chapter 4: Fill the Missing Code',
-    cue: 'Choose the best token to complete the code.',
-    storyHook: 'Story: Festival coding booth opens and missing code must be completed fast.',
-    learningGoal: 'Goal: Fill blanks with values that match the expected type.',
-    sceneAsset: '../assets/scenes/scene-ch4-festival.svg',
-    sceneFx: 'festival',
-    cinematicLines: [
-      'Lantern lights glow over the pond as the showcase begins.',
-      'Complete each missing value to keep the code running.'
-    ],
-    prepLabel: 'Preparing fill-in drills...',
-    questions: [
-      { prompt: 'Fill the blank so coins is int.', snippet: 'let coins = ___;', choices: ['"120"', '120', 'false'], answerIndex: 1, hintText: 'int values are whole numbers with no quotes.' },
-      { prompt: 'Fill the blank so isReady is bool.', snippet: 'const isReady = ___;', choices: ['"true"', '1', 'true'], answerIndex: 2, hintText: 'Boolean literals are true/false without quotes.' },
-      { prompt: 'Fill the blank so playerName is string.', snippet: 'const playerName = ___;', choices: ['"Jham"', 'Jham', '0'], answerIndex: 0, hintText: 'Strings are wrapped by paired quotes.' },
-      { prompt: 'Fill the blank so hasBread is bool.', snippet: 'let hasBread = ___;', choices: ['false', '"false"', '"0"'], answerIndex: 0, hintText: 'Pick the unquoted logic literal.' },
-      { prompt: 'Fill the blank so chapterNumber is int.', snippet: 'const chapterNumber = ___;', choices: ['"4"', '4', 'true'], answerIndex: 1, hintText: 'An int is numeric and unquoted.' },
-      { prompt: 'Fill the blank so missionTag is string.', snippet: 'let missionTag = ___;', choices: ['"pond_rescue"', 'pond_rescue', '25'], answerIndex: 0, hintText: 'Labels in code should be quoted strings.' }
-    ]
-  },
-  5: {
-    mode: 'quick_pick',
-    title: 'Chapter 5: Final Mixed Mission',
-    cue: 'Choose the best code decision each round.',
-    storyHook: 'Story: Final review with Eppy before the ending story.',
-    learningGoal: 'Goal: Make accurate mixed decisions across string, bool, and int.',
-    sceneAsset: '../assets/scenes/scene-ch4-festival.svg',
-    sceneFx: 'sunrise',
-    cinematicLines: [
-      'Eppy opens the final notebook page marked: Mastery Check.',
-      'Final mixed decisions. Stay calm and precise.'
-    ],
-    prepLabel: 'Preparing final mixed mission...',
-    questions: [
-      { prompt: 'Which line correctly stores bool passed?', choices: ['const passed = "true";', 'const passed = true;', 'const passed = 1;'], answerIndex: 1, hintText: 'Choose the unquoted boolean literal.' },
-      { prompt: 'Which line correctly stores int score?', choices: ['let score = "90";', 'let score = 90;', 'let score = false;'], answerIndex: 1, hintText: 'int values are whole numbers with no quote wrapper.' },
-      { prompt: 'Which line correctly stores string duckName?', choices: ['let duckName = Eppy;', 'let duckName = 0;', 'let duckName = "Eppy";'], answerIndex: 2, hintText: 'String names must be quoted.' },
-      { prompt: 'Which value should replace ___ in: let hintCost = ___;', choices: ['100', '"100"', 'true'], answerIndex: 0, hintText: 'Currency count should be numeric int.' },
-      { prompt: 'Which declaration is valid bool for hasLives?', choices: ['const hasLives = "false";', 'const hasLives = false;', 'const hasLives = "0";'], answerIndex: 1, hintText: 'Pick the unquoted logical value.' },
-      { prompt: 'Which declaration is valid string for chapterTitle?', choices: ['const chapterTitle = "Final Mission";', 'const chapterTitle = Final Mission;', 'const chapterTitle = 5;'], answerIndex: 0, hintText: 'Text labels belong inside quotes.' }
-    ]
-  }
+   3: {
+     mode: 'find_error',
+     title: 'Chapter 3: Find the Error [Java]',
+     cue: 'Tap the line that contains the type error.',
+     storyHook: 'Story: Eppy checks your Java code and asks you to find broken lines.',
+     learningGoal: 'Goal: Detect incorrect value types inside small Java code snippets.',
+     sceneAsset: '../assets/scenes/scene-ch3-sunrise.svg',
+     sceneFx: 'sunrise',
+     cinematicLines: [
+       'Sunlight reaches the pond. Java debug mission starts.',
+       'Find the wrong line before Eppy gets confused.'
+     ],
+     prepLabel: 'Preparing Java debug drills...',
+     questions: [
+       { prompt: 'Find the type error. Variable target: boolean.', lines: ['boolean isReady = "true";', 'int points = 25;', 'String mascot = "Eppy";'], answerIndex: 0, hintText: 'A boolean cannot hold a quoted string value.' },
+       { prompt: 'Find the type error. Variable target: int.', lines: ['int lives = "3";', 'boolean passed = true;', 'String levelName = "Pond";'], answerIndex: 0, hintText: 'An int cannot hold a quoted string value.' },
+       { prompt: 'Find the type error. Variable target: String.', lines: ['String chapterName = 4;', 'int accuracy = 98;', 'boolean enabled = false;'], answerIndex: 0, hintText: 'A String cannot hold a raw integer value.' },
+       { prompt: 'Find the type error. Variable target: boolean.', lines: ['boolean hasBadge = "true";', 'String hasHint = "false";', 'int coins = 110;'], answerIndex: 0, hintText: 'Boolean values should not be quoted strings.' },
+       { prompt: 'Find the type error. Variable target: int.', lines: ['int totalCoins = "540";', 'String bestScore = "100";', 'boolean isCalm = true;'], answerIndex: 0, hintText: 'An int cannot hold a quoted string value.' },
+       { prompt: 'Find the type error. Variable target: String.', lines: ['String duckName = 42;', 'int chapterCode = 503;', 'boolean isComplete = false;'], answerIndex: 0, hintText: 'A String cannot hold a raw integer value.' }
+     ]
+   },
+   4: {
+     mode: 'fill_missing',
+     title: 'Chapter 4: Fill the Blanks [Java]',
+     cue: 'Choose the best token to complete the Java code.',
+     storyHook: 'Story: Festival coding booth opens and missing Java code must be completed fast.',
+     learningGoal: 'Goal: Fill blanks with values that match the expected type in Java.',
+     sceneAsset: '../assets/scenes/scene-ch4-festival.svg',
+     sceneFx: 'festival',
+     cinematicLines: [
+       'Lantern lights glow over the pond as the Java showcase begins.',
+       'Complete each missing value to keep the code compiling.'
+     ],
+     prepLabel: 'Preparing Java fill-in drills...',
+     questions: [
+       { prompt: 'Fill the blank so coins is int.', snippet: 'int coins = ___;', choices: ['"120"', '120', 'false'], answerIndex: 1, hintText: 'int values are whole numbers without quotes.' },
+       { prompt: 'Fill the blank so isReady is boolean.', snippet: 'boolean isReady = ___;', choices: ['"true"', 'true', '1'], answerIndex: 1, hintText: 'Boolean literals are true or false without quotes.' },
+       { prompt: 'Fill the blank so playerName is String.', snippet: 'String playerName = ___;', choices: ['"Jham"', 'Jham', '0'], answerIndex: 0, hintText: 'String values must be wrapped in quotes.' },
+       { prompt: 'Fill the blank so hasBread is boolean.', snippet: 'boolean hasBread = ___;', choices: ['false', '"false"', '"0"'], answerIndex: 0, hintText: 'Boolean uses unquoted true or false.' },
+       { prompt: 'Fill the blank so chapterNumber is int.', snippet: 'int chapterNumber = ___;', choices: ['"4"', '4', 'true'], answerIndex: 1, hintText: 'int is a numeric value without quotes.' },
+       { prompt: 'Fill the blank so missionTag is String.', snippet: 'String missionTag = ___;', choices: ['"pond_rescue"', 'pond_rescue', '25'], answerIndex: 0, hintText: 'Text labels require quote delimiters.' }
+     ]
+   },
+   5: {
+     mode: 'fill_missing',
+     title: 'Chapter 5: Fill in the Blanks [Java] 🔒',
+     cue: 'Choose the best token to complete the Java code.',
+     storyHook: 'Story: Final Java review with Eppy before the ending story.',
+     learningGoal: 'Goal: Fill blanks with values that match the expected type in Java.',
+     sceneAsset: '../assets/scenes/scene-ch4-festival.svg',
+     sceneFx: 'sunrise',
+     cinematicLines: [
+       'Eppy opens the final Java notebook page marked: Mastery Check.',
+       'Complete each missing value to keep the code compiling.'
+     ],
+     prepLabel: 'Preparing Java fill-in drills...',
+     premium: true,
+     questions: [
+       { prompt: 'Fill the blank so passed is boolean.', snippet: 'boolean passed = ___;', choices: ['"true"', 'true', '1'], answerIndex: 1, hintText: 'Boolean literals are true or false without quotes.' },
+       { prompt: 'Fill the blank so score is int.', snippet: 'int score = ___;', choices: ['"90"', '90', 'false'], answerIndex: 1, hintText: 'int values are whole numbers without quotes.' },
+       { prompt: 'Fill the blank so duckName is String.', snippet: 'String duckName = ___;', choices: ['Eppy', '0', '"Eppy"'], answerIndex: 2, hintText: 'String values must be wrapped in quotes.' },
+       { prompt: 'Fill the blank so hintCost is int.', snippet: 'int hintCost = ___;', choices: ['100', '"100"', 'true'], answerIndex: 0, hintText: 'Currency count should be a numeric int value.' },
+       { prompt: 'Fill the blank so hasLives is boolean.', snippet: 'boolean hasLives = ___;', choices: ['"false"', 'false', '"0"'], answerIndex: 1, hintText: 'Boolean uses unquoted true or false.' },
+       { prompt: 'Fill the blank so chapterTitle is String.', snippet: 'String chapterTitle = ___;', choices: ['"Final Mission"', 'Final Mission', '5'], answerIndex: 0, hintText: 'Text labels require quote delimiters.' }
+     ]
+   }
 };
 const endingScenes = [
   {
@@ -257,6 +258,13 @@ let unlockedChapter = Number(localStorage.getItem('learnagochiUnlockedChapter') 
 let coins = Number(localStorage.getItem('learnagochiCoins') || '0');
 let bondXp = Number(localStorage.getItem('learnagochiBondXp') || '0');
 let previousCoins = coins;
+let unlockedPremiumChapters = new Set();
+try {
+  const stored = localStorage.getItem('learnagochiPremiumUnlocked');
+  if (stored) unlockedPremiumChapters = new Set(JSON.parse(stored));
+} catch {
+  unlockedPremiumChapters = new Set();
+}
 
 let ownedStyles = [];
 try {
@@ -666,6 +674,23 @@ function persistState() {
   localStorage.setItem('learnagochiBondXp', String(bondXp));
   localStorage.setItem('learnagochiOwnedStyles', JSON.stringify(ownedStyles));
   localStorage.setItem('learnagochiSelectedStyle', selectedStyle);
+  localStorage.setItem('learnagochiPremiumUnlocked', JSON.stringify([...unlockedPremiumChapters]));
+}
+
+function isPremiumChapter(chapterNum) {
+  const chapter = chapters[chapterNum];
+  return chapter ? chapter.premium === true : false;
+}
+
+function unlockPremiumChapter(chapterNum) {
+  unlockedPremiumChapters.add(chapterNum);
+  persistState();
+}
+
+function canAccessChapter(chapterNum) {
+  if (chapterNum > unlockedChapter) return false;
+  if (isPremiumChapter(chapterNum) && !unlockedPremiumChapters.has(chapterNum)) return false;
+  return true;
 }
 
 function currentChapterData() {
@@ -997,10 +1022,15 @@ function renderChapterStrip() {
   for (let i = 1; i <= totalChapters; i += 1) {
     const pill = document.createElement('div');
     pill.className = 'chapter-pill';
-    pill.textContent = `Ch ${i}`;
+    const isPremium = isPremiumChapter(i);
+    const isUnlockedPremium = unlockedPremiumChapters.has(i);
+    pill.textContent = `Ch ${i}${isPremium && !isUnlockedPremium ? ' 🔒' : ''}`;
 
     if (i === currentChapter) pill.classList.add('active');
     if (i > unlockedChapter) pill.classList.add('locked');
+    if (isPremium && !isUnlockedPremium && i <= unlockedChapter) {
+      pill.classList.add('locked');
+    }
 
     chapterStrip.appendChild(pill);
   }
@@ -1014,18 +1044,27 @@ function renderChapterButtons() {
     const button = document.createElement('button');
     button.className = 'chapter-btn';
     button.type = 'button';
-    button.textContent = `Chapter ${i}`;
+    const isPremium = isPremiumChapter(i);
+    const isUnlockedPremium = unlockedPremiumChapters.has(i);
+    button.textContent = `Chapter ${i}${isPremium ? ' 🔒' : ''}`;
 
     if (i === currentChapter) button.classList.add('active');
     if (i > unlockedChapter) {
       button.classList.add('locked');
       button.textContent = `Chapter ${i} (Locked)`;
+    } else if (isPremium && !isUnlockedPremium) {
+      button.classList.add('locked');
+      button.textContent = `Chapter ${i} 🔒 (Premium)`;
     }
 
     button.addEventListener('click', () => {
       playClickSfx();
       if (i > unlockedChapter) {
         setDialogue('Complete earlier chapters first to unlock this one.', 2000);
+        return;
+      }
+      if (isPremium && !isUnlockedPremium) {
+        setDialogue('This is a premium chapter. Unlock it to access advanced content!', 2000);
         return;
       }
       closeOverlay(settingsPanel);
@@ -1342,6 +1381,10 @@ function finishChapter() {
 
   if (currentChapter < totalChapters) {
     unlockedChapter = Math.max(unlockedChapter, currentChapter + 1);
+  }
+
+  if (currentChapter === 4) {
+    unlockPremiumChapter(5);
   }
 
   updateHud();
@@ -1799,6 +1842,11 @@ async function loadChapter(chapterNumber, options = {}) {
 
   if (chapter > unlockedChapter) {
     setDialogue('Finish current chapter to unlock the next journey.', 1600);
+    return;
+  }
+
+  if (!canAccessChapter(chapter)) {
+    setDialogue('This chapter is premium. Unlock it to continue learning!', 1600);
     return;
   }
 
