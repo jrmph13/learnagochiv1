@@ -890,6 +890,9 @@ function renderModeQuestion(question) {
 function resolveAnswer(isCorrect, feedbackTarget) {
   roundAttempts += 1;
 
+  const modeOptions = document.querySelectorAll('.mode-option');
+  modeOptions.forEach(btn => btn.disabled = true);
+
   if (isCorrect) {
     roundCorrect += 1;
     bondXp += 12;
