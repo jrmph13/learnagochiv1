@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <base href="/Game/" />
   <title>Learnagochi Game</title>
-  <link rel="stylesheet" href="style.css?v=20260406a" />
+  <link rel="stylesheet" href="style.css?v=20260406d" />
 </head>
 <body>
   <img src="../assets/river-ils.png" alt="Pond background" id="main-bg" />
@@ -20,6 +20,7 @@
       <button id="settings-toggle" class="ui-btn" type="button">Settings</button>
       <button id="journal-toggle" class="ui-btn" type="button">Journal</button>
       <button id="shop-toggle" class="ui-btn" type="button">Shop</button>
+      <button id="references-toggle" class="ui-btn" type="button">References</button>
       <button id="home-button" class="ui-btn" type="button">Home</button>
     </div>
   </header>
@@ -44,7 +45,10 @@
     <section id="challenge-zone" class="panel">
       <div class="chapter-strip" id="chapter-strip"></div>
       <div id="challenge-header">
-        <h1 id="chapter-title">Chapter 1: Pond Basics</h1>
+        <div class="chapter-header-row">
+          <h1 id="chapter-title">Chapter 1: Pond Basics</h1>
+          <span id="language-badge" class="language-badge lang-basic">Basic Types</span>
+        </div>
         <p id="progress-text">1 / 10</p>
       </div>
       <div id="chapter-meta" class="chapter-meta">
@@ -103,7 +107,7 @@
           </ul>
         </article>
         <article>
-          <h3>Motivation (Intrinsic &amp; Extrinsic)</h3>
+          <h3>Motivation (Intrinsic & Extrinsic)</h3>
           <ul>
             <li>Intrinsic: players build emotional attachment through bond level, feedback, and duck reactions.</li>
             <li>Extrinsic: every chapter clear and post-assessment gives coins/points.</li>
@@ -134,7 +138,7 @@
           <h3>Programming Elements</h3>
           <ul>
             <li>Core concepts: <code>string</code>, <code>bool</code>, and <code>int</code>.</li>
-            <li>Mixed literals include tricky pairs like <code>&quot;true&quot;</code> vs <code>true</code>.</li>
+            <li>Mixed literals include tricky pairs like <code>"true"</code> vs <code>true</code>.</li>
             <li>Variable-style values and type sorting support beginner coding foundations.</li>
           </ul>
         </article>
@@ -185,6 +189,68 @@
         <p id="shop-notice" class="shop-notice" role="status" aria-live="polite"></p>
       </div>
       <div id="style-shop" class="style-shop"></div>
+    </div>
+  </aside>
+
+  <aside id="references-panel" class="overlay" aria-hidden="true">
+    <div class="modal references-modal">
+      <button id="close-references" class="close-btn" type="button" aria-label="Close references">x</button>
+      <h2>Programming References</h2>
+      <div class="references-grid">
+        <article>
+          <h3>Java Type Rules</h3>
+          <ul>
+            <li><code>String</code> values must be wrapped in double quotes: <code>"hello"</code></li>
+            <li><code>int</code> holds whole numbers only: <code>42</code>, <code>-5</code></li>
+            <li><code>boolean</code> is only <code>true</code> or <code>false</code> (no quotes)</li>
+            <li><code>char</code> uses single quotes: <code>'A'</code></li>
+            <li><code>double</code> holds decimals without quotes: <code>3.14</code></li>
+            <li>Putting quotes around a number makes it a <code>String</code>, not a number</li>
+            <li>Putting quotes around <code>true</code>/<code>false</code> makes it a <code>String</code>, not a <code>boolean</code></li>
+          </ul>
+        </article>
+        <article>
+          <h3>JavaScript Type Rules</h3>
+          <ul>
+            <li><code>String</code> values are wrapped in quotes: <code>"hello"</code> or <code>'hello'</code></li>
+            <li><code>Number</code> has no quotes: <code>42</code>, <code>-5</code>, <code>0</code></li>
+            <li><code>Boolean</code> is <code>true</code> or <code>false</code> without quotes</li>
+            <li>Even <code>"false"</code> with quotes is a <code>String</code></li>
+            <li>Even <code>"0"</code> with quotes is a <code>String</code></li>
+            <li>Zero <code>0</code> without quotes is a <code>Number</code></li>
+          </ul>
+        </article>
+        <article>
+          <h3>Java vs JavaScript - Key Differences</h3>
+          <ul>
+            <li>Java is <strong>statically typed</strong> - you must declare types (String, int, boolean)</li>
+            <li>JavaScript is <strong>dynamically typed</strong> - types are determined by the value</li>
+            <li>In Java: <code>String name = "Eppy";</code> (type on the left)</li>
+            <li>In JavaScript: <code>let name = "Eppy";</code> (no type declaration needed)</li>
+            <li>Java uses <code>"double quotes"</code> for Strings, <code>'single quotes'</code> for char</li>
+            <li>JavaScript can use either <code>"double"</code> or <code>'single'</code> quotes for Strings</li>
+          </ul>
+        </article>
+        <article>
+          <h3>Chapter Quick Guide</h3>
+          <ul>
+            <li><strong>Chapter 1-2</strong> [Basic Types]: Drag values to type boxes</li>
+            <li><strong>Chapter 3</strong> [Java]: Find the type mismatch error line</li>
+            <li><strong>Chapter 4</strong> [JavaScript]: Quiz - pick the correct type/value</li>
+            <li><strong>Chapter 5</strong> [JavaScript]: Fill in the blank with the correct value</li>
+          </ul>
+        </article>
+        <article>
+          <h3>Common Mistakes to Avoid</h3>
+          <ul>
+            <li>Don't confuse <code>true</code> (boolean) with <code>"true"</code> (string)</li>
+            <li>Don't confuse <code>42</code> (number/int) with <code>"42"</code> (string)</li>
+            <li>Java <code>int</code> cannot hold decimals - use <code>double</code> instead</li>
+            <li>Java <code>boolean</code> cannot be <code>1</code> or <code>0</code> - only <code>true</code> or <code>false</code></li>
+            <li>Java <code>char</code> needs single quotes, not double quotes</li>
+          </ul>
+        </article>
+      </div>
     </div>
   </aside>
 
