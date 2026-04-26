@@ -1167,13 +1167,9 @@ function renderChapterButtons() {
         return;
       }
       if (!purchased) {
-        if (purchaseChapter(i)) {
-          setDialogue(`Chapter ${i} purchased! Loading...`, 1500);
-          closeOverlay(settingsPanel);
-          loadChapter(i, { withCinematic: true });
-        } else {
-          setDialogue(`Need ${cost} coins to buy Chapter ${i}. You have ${coins} coins.`, 2500);
-        }
+        // Show purchase modal
+        showPurchaseModal(i);
+        closeOverlay(settingsPanel);
         return;
       }
       if (isPremium && !isUnlockedPremium) {
@@ -1999,7 +1995,9 @@ if (continueBtn) {
 if (endingNextBtn) {
   endingNextBtn.addEventListener('click', () => {
     playClickSfx();
-    replayEndingStory();
+    finishEndingStory();
+    // Go directly to game (start from chapter 1 or continue)
+    loadChapter(1, { withCinematic: true });
   });
 }
 
