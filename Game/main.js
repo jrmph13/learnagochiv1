@@ -38,6 +38,13 @@ const shopNotice = document.getElementById('shop-notice');
 const referencesToggle = document.getElementById('references-toggle');
 const referencesPanel = document.getElementById('references-panel');
 const closeReferences = document.getElementById('close-references');
+const purchasePanel = document.getElementById('purchase-panel');
+const closePurchase = document.getElementById('close-purchase');
+const purchaseCancelBtn = document.getElementById('purchase-cancel-btn');
+const purchaseBuyBtn = document.getElementById('purchase-buy-btn');
+const purchaseChapterName = document.getElementById('purchase-chapter-name');
+const purchasePrice = document.getElementById('purchase-price');
+const purchaseCoins = document.getElementById('purchase-coins');
 const homeButton = document.getElementById('home-button');
 
 const chapterButtons = document.getElementById('chapter-buttons');
@@ -1603,6 +1610,30 @@ document.addEventListener('pointercancel', () => {
   clearDragState();
 });
 
+let pendingPurchaseChapter = null;
+
+function showPurchaseModal(chapterNum) {
+  if (!purchasePanel || !purchaseBuyBtn || !purchaseChapterName || !purchasePrice || !purchaseCoins) return;
+  const chapter = chapters[chapterNum];
+  if (!chapter) return;
+  const cost = getChapterCost(chapterNum);
+  pendingPurchaseChapter = chapterNum;
+
+  purchaseChapterName.textContent = chapter.title || 'Chapter ' + chapterNum;
+  purchasePrice.textContent = cost > 0 ? cost + ' coins' : 'Free';
+  purchaseCoins.textContent = 'You have: ' + coins + ' coins';
+  purchaseBuyBtn.textContent = cost > 0 ? 'Buy for ' + cost + ' coins' : 'Unlock Chapter';
+  purchaseBuyBtn.disabled = coins < cost;
+
+  openOverlay(purchasePanel);
+}
+
+function hidePurchaseModal() {
+  if (!purchasePanel) return;
+  closeOverlay(purchasePanel);
+  pendingPurchaseChapter = null;
+}
+
 function openOverlay(overlay) {
   if (!overlay) return;
   overlay.classList.add('open');
@@ -1849,8 +1880,36 @@ if (closeReferences) {
     closeOverlay(referencesPanel);
   });
 }
+if (closePurchase) {
+  closePurchase.addEventListener('click', () => {
+    playClickSfx({ boost: 0.55 });
+    hidePurchaseModal();
+  });
+}
+if (purchaseCancelBtn) {
+  purchaseCancelBtn.addEventListener('click', () => {
+    playClickSfx({ boost: 0.55 });
+    hidePurchaseModal();
+  });
+}
+if (purchaseBuyBtn) {
+  purchaseBuyBtn.addEventListener('click', () => {
+    playClickSfx();
+    if (!pendingPurchaseChapter) return;
+    const chapterNum = pendingPurchaseChapter;
+    const cost = getChapterCost(chapterNum);
+    if (purchaseChapter(chapterNum)) {
+      hidePurchaseModal();
+      setDialogue(`Chapter ${chapterNum} purchased! Loading...`, 1500);
+      loadChapter(chapterNum, { withCinematic: true });
+    } else {
+      setDialogue(`Need ${cost} coins to buy Chapter ${chapterNum}. You have ${coins} coins.`, 2500);
+      purchaseBuyBtn.disabled = true;
+    }
+  });
+}
 
-[settingsPanel, journalPanel, shopPanel, referencesPanel, endingPanel].forEach((panel) => {
+[settingsPanel, journalPanel, shopPanel, referencesPanel, purchasePanel, endingPanel].forEach((panel) => {
   if (!panel) return;
   panel.addEventListener('click', (event) => {
     if (event.target === panel) {
@@ -1925,7 +1984,12 @@ if (continueBtn) {
     }
 
     if (currentChapter < totalChapters && unlockedChapter >= currentChapter + 1) {
-      loadChapter(currentChapter + 1, { withCinematic: true });
+      const next = currentChapter + 1;
+      if (!isChapterPurchased(next)) {
+        showPurchaseModal(next);
+      } else {
+        loadChapter(next, { withCinematic: true });
+      }
     } else {
       loadChapter(currentChapter, { withCinematic: false });
     }
@@ -1954,6 +2018,7 @@ document.addEventListener('keydown', (event) => {
     closeOverlay(journalPanel);
     closeOverlay(shopPanel);
     closeOverlay(referencesPanel);
+    closeOverlay(purchasePanel);
     closeOverlay(endingPanel);
     if (cinematicPlaying) cinematicSkipRequested = true;
   }
@@ -1978,12 +2043,8 @@ async function loadChapter(chapterNumber, options = {}) {
 
   if (!canAccessChapter(chapter)) {
     const cost = getChapterCost(chapter);
-    if (cost > 0 && coins >= cost) {
-      if (purchaseChapter(chapter)) {
-        setDialogue(`Chapter ${chapter} purchased! Enjoy!`, 1500);
-      }
-    } else if (cost > 0) {
-      setDialogue(`Need ${cost} coins to unlock Chapter ${chapter}. You have ${coins} coins.`, 2500);
+    if (cost > 0) {
+      showPurchaseModal(chapter);
       return;
     } else {
       setDialogue('This chapter is locked. Complete earlier chapters first.', 1600);

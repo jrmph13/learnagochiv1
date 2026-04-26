@@ -1413,6 +1413,48 @@ body::before {
     padding: 16px 14px 14px;
   }
 
+  .purchase-modal {
+    width: min(340px, 85vw);
+    padding: 28px 24px 22px;
+    text-align: center;
+    background: linear-gradient(180deg, #fffcf5 0%, #fff8e7 100%);
+  }
+
+  .purchase-title {
+    font-size: 1.35rem;
+    color: #5a4a3a;
+    margin: 0 0 12px;
+  }
+
+  .purchase-chapter-name {
+    font-size: 1.1rem;
+    color: #6b5a4a;
+    margin: 0 0 8px;
+  }
+
+  .purchase-price {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #d4a84b;
+    margin: 0 0 6px;
+  }
+
+  .purchase-coins {
+    font-size: 0.9rem;
+    color: #8a7a6a;
+    margin: 0 0 20px;
+  }
+
+  .purchase-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+  }
+
+  .purchase-buttons .ui-btn {
+    min-width: 100px;
+  }
+
   .shop-grid {
     grid-template-columns: 1fr;
   }
