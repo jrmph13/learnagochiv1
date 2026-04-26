@@ -1890,6 +1890,12 @@ async function loadChapter(chapterNumber, options = {}) {
 
   if (token !== chapterLoadToken) return;
   spawnValue();
+  
+  // Ensure mode panel is properly rendered for non-box modes
+  const mode = getQuestionMode();
+  if (mode !== 'box' && modePanel) {
+    modePanel.hidden = false;
+  }
 }
 
 function resumeAudio() {
