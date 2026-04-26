@@ -1884,8 +1884,12 @@ if (closePurchase) {
 }
 if (purchaseCancelBtn) {
   purchaseCancelBtn.addEventListener('click', () => {
-    playClickSfx({ boost: 0.55 });
+    playClickSfx();
+    const chapterNum = pendingPurchaseChapter;
     hidePurchaseModal();
+    if (chapterNum) {
+      loadChapter(chapterNum, { withCinematic: true });
+    }
   });
 }
 if (purchaseBuyBtn) {
