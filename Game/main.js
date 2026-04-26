@@ -181,24 +181,24 @@ const chapters = {
    },
    4: {
      mode: 'fill_missing',
-     title: 'Chapter 4: Fill the Blanks [Java]',
-     cue: 'Choose the best token to complete the Java code.',
-     storyHook: 'Story: Festival coding booth opens and missing Java code must be completed fast.',
-     learningGoal: 'Goal: Fill blanks with values that match the expected type in Java.',
+     title: 'Chapter 4: Fill the Blanks [JavaScript]',
+     cue: 'Choose the best token to complete the code.',
+     storyHook: 'Story: Festival coding booth opens and missing code must be completed fast.',
+     learningGoal: 'Goal: Fill blanks with values that match the expected type in JavaScript.',
      sceneAsset: '../assets/scenes/scene-ch4-festival.svg',
      sceneFx: 'festival',
      cinematicLines: [
-       'Lantern lights glow over the pond as the Java showcase begins.',
-       'Complete each missing value to keep the code compiling.'
+       'Lantern lights glow over the pond as the JavaScript showcase begins.',
+       'Complete each missing value to keep the code running.'
      ],
-     prepLabel: 'Preparing Java fill-in drills...',
+     prepLabel: 'Preparing JavaScript fill-in drills...',
      questions: [
-       { prompt: 'Fill the blank so coins is int.', snippet: 'int coins = ___;', choices: ['"120"', '120', 'false'], answerIndex: 1, hintText: 'int values are whole numbers without quotes.' },
-       { prompt: 'Fill the blank so isReady is boolean.', snippet: 'boolean isReady = ___;', choices: ['"true"', 'true', '1'], answerIndex: 1, hintText: 'Boolean literals are true or false without quotes.' },
-       { prompt: 'Fill the blank so playerName is String.', snippet: 'String playerName = ___;', choices: ['"Jham"', 'Jham', '0'], answerIndex: 0, hintText: 'String values must be wrapped in quotes.' },
-       { prompt: 'Fill the blank so hasBread is boolean.', snippet: 'boolean hasBread = ___;', choices: ['false', '"false"', '"0"'], answerIndex: 0, hintText: 'Boolean uses unquoted true or false.' },
-       { prompt: 'Fill the blank so chapterNumber is int.', snippet: 'int chapterNumber = ___;', choices: ['"4"', '4', 'true'], answerIndex: 1, hintText: 'int is a numeric value without quotes.' },
-       { prompt: 'Fill the blank so missionTag is String.', snippet: 'String missionTag = ___;', choices: ['"pond_rescue"', 'pond_rescue', '25'], answerIndex: 0, hintText: 'Text labels require quote delimiters.' }
+       { prompt: 'Fill the blank so coins is int.', snippet: 'let coins = ___;', choices: ['"120"', '120', 'false'], answerIndex: 1, hintText: 'int values are whole numbers without quotes.' },
+       { prompt: 'Fill the blank so isReady is boolean.', snippet: 'const isReady = ___;', choices: ['"true"', 'true', '1'], answerIndex: 2, hintText: 'Boolean literals are true or false without quotes.' },
+       { prompt: 'Fill the blank so playerName is string.', snippet: 'const playerName = ___;', choices: ['"Jham"', 'Jham', '0'], answerIndex: 0, hintText: 'String values must be wrapped in quotes.' },
+       { prompt: 'Fill the blank so hasBread is boolean.', snippet: 'let hasBread = ___;', choices: ['false', '"false"', '"0"'], answerIndex: 0, hintText: 'Boolean uses unquoted true or false.' },
+       { prompt: 'Fill the blank so chapterNumber is int.', snippet: 'const chapterNumber = ___;', choices: ['"4"', '4', 'true'], answerIndex: 1, hintText: 'int is a numeric value without quotes.' },
+       { prompt: 'Fill the blank so missionTag is string.', snippet: 'let missionTag = ___;', choices: ['"pond_rescue"', 'pond_rescue', '25'], answerIndex: 0, hintText: 'Text labels require quote delimiters.' }
      ]
    },
    5: {
@@ -216,12 +216,12 @@ const chapters = {
      prepLabel: 'Preparing JavaScript fill-in drills...',
      premium: true,
      questions: [
-       { prompt: 'Fill the blank so passed is boolean.', snippet: 'const passed = ___;', choices: ['"true"', 'true', '1'], answerIndex: 1, hintText: 'Boolean literals are true or false without quotes.' },
-       { prompt: 'Fill the blank so score is int.', snippet: 'let score = ___;', choices: ['"90"', '90', 'false'], answerIndex: 1, hintText: 'int values are whole numbers without quotes.' },
-       { prompt: 'Fill the blank so duckName is string.', snippet: 'let duckName = ___;', choices: ['Eppy', '0', '"Eppy"'], answerIndex: 2, hintText: 'String values must be wrapped in quotes.' },
-       { prompt: 'Fill the blank so hintCost is int.', snippet: 'let hintCost = ___;', choices: ['100', '"100"', 'true'], answerIndex: 0, hintText: 'Currency count should be a numeric int value.' },
-       { prompt: 'Fill the blank so hasLives is boolean.', snippet: 'const hasLives = ___;', choices: ['"false"', 'false', '"0"'], answerIndex: 1, hintText: 'Boolean uses unquoted true or false.' },
-       { prompt: 'Fill the blank so chapterTitle is string.', snippet: 'const chapterTitle = ___;', choices: ['"Final Mission"', 'Final Mission', '5'], answerIndex: 0, hintText: 'Text labels require quote delimiters.' }
+       { prompt: 'Fill the blank so coins is int.', snippet: 'let coins = ___;', choices: ['"120"', '120', 'false'], answerIndex: 1, hintText: 'int values are whole numbers without quotes.' },
+       { prompt: 'Fill the blank so isReady is boolean.', snippet: 'const isReady = ___;', choices: ['"true"', 'true', '1'], answerIndex: 2, hintText: 'Boolean literals are true or false without quotes.' },
+       { prompt: 'Fill the blank so playerName is string.', snippet: 'const playerName = ___;', choices: ['"Jham"', 'Jham', '0'], answerIndex: 0, hintText: 'String values must be wrapped in quotes.' },
+       { prompt: 'Fill the blank so hasBread is boolean.', snippet: 'let hasBread = ___;', choices: ['false', '"false"', '"0"'], answerIndex: 0, hintText: 'Boolean uses unquoted true or false.' },
+       { prompt: 'Fill the blank so chapterNumber is int.', snippet: 'const chapterNumber = ___;', choices: ['"4"', '4', 'true'], answerIndex: 1, hintText: 'int is a numeric value without quotes.' },
+       { prompt: 'Fill the blank so missionTag is string.', snippet: 'let missionTag = ___;', choices: ['"pond_rescue"', 'pond_rescue', '25'], answerIndex: 0, hintText: 'Text labels require quote delimiters.' }
      ]
    }
 };
