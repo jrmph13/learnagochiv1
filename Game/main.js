@@ -203,25 +203,25 @@ const chapters = {
    },
    5: {
      mode: 'fill_missing',
-     title: 'Chapter 5: Fill in the Blanks [Java] 🔒',
-     cue: 'Choose the best token to complete the Java code.',
-     storyHook: 'Story: Final Java review with Eppy before the ending story.',
-     learningGoal: 'Goal: Fill blanks with values that match the expected type in Java.',
+     title: 'Chapter 5: Fill in the Blanks [JavaScript] 🔒',
+     cue: 'Choose the best token to complete the code.',
+     storyHook: 'Story: Final JavaScript review with Eppy before the ending story.',
+     learningGoal: 'Goal: Fill blanks with values that match the expected type in JavaScript.',
      sceneAsset: '../assets/scenes/scene-ch4-festival.svg',
      sceneFx: 'sunrise',
      cinematicLines: [
-       'Eppy opens the final Java notebook page marked: Mastery Check.',
-       'Complete each missing value to keep the code compiling.'
+       'Eppy opens the final JavaScript notebook page marked: Mastery Check.',
+       'Complete each missing value to keep the code running.'
      ],
-     prepLabel: 'Preparing Java fill-in drills...',
+     prepLabel: 'Preparing JavaScript fill-in drills...',
      premium: true,
      questions: [
-       { prompt: 'Fill the blank so passed is boolean.', snippet: 'boolean passed = ___;', choices: ['"true"', 'true', '1'], answerIndex: 1, hintText: 'Boolean literals are true or false without quotes.' },
-       { prompt: 'Fill the blank so score is int.', snippet: 'int score = ___;', choices: ['"90"', '90', 'false'], answerIndex: 1, hintText: 'int values are whole numbers without quotes.' },
-       { prompt: 'Fill the blank so duckName is String.', snippet: 'String duckName = ___;', choices: ['Eppy', '0', '"Eppy"'], answerIndex: 2, hintText: 'String values must be wrapped in quotes.' },
-       { prompt: 'Fill the blank so hintCost is int.', snippet: 'int hintCost = ___;', choices: ['100', '"100"', 'true'], answerIndex: 0, hintText: 'Currency count should be a numeric int value.' },
-       { prompt: 'Fill the blank so hasLives is boolean.', snippet: 'boolean hasLives = ___;', choices: ['"false"', 'false', '"0"'], answerIndex: 1, hintText: 'Boolean uses unquoted true or false.' },
-       { prompt: 'Fill the blank so chapterTitle is String.', snippet: 'String chapterTitle = ___;', choices: ['"Final Mission"', 'Final Mission', '5'], answerIndex: 0, hintText: 'Text labels require quote delimiters.' }
+       { prompt: 'Fill the blank so passed is boolean.', snippet: 'const passed = ___;', choices: ['"true"', 'true', '1'], answerIndex: 1, hintText: 'Boolean literals are true or false without quotes.' },
+       { prompt: 'Fill the blank so score is int.', snippet: 'let score = ___;', choices: ['"90"', '90', 'false'], answerIndex: 1, hintText: 'int values are whole numbers without quotes.' },
+       { prompt: 'Fill the blank so duckName is string.', snippet: 'let duckName = ___;', choices: ['Eppy', '0', '"Eppy"'], answerIndex: 2, hintText: 'String values must be wrapped in quotes.' },
+       { prompt: 'Fill the blank so hintCost is int.', snippet: 'let hintCost = ___;', choices: ['100', '"100"', 'true'], answerIndex: 0, hintText: 'Currency count should be a numeric int value.' },
+       { prompt: 'Fill the blank so hasLives is boolean.', snippet: 'const hasLives = ___;', choices: ['"false"', 'false', '"0"'], answerIndex: 1, hintText: 'Boolean uses unquoted true or false.' },
+       { prompt: 'Fill the blank so chapterTitle is string.', snippet: 'const chapterTitle = ___;', choices: ['"Final Mission"', 'Final Mission', '5'], answerIndex: 0, hintText: 'Text labels require quote delimiters.' }
      ]
    }
 };
@@ -1064,8 +1064,7 @@ function renderChapterButtons() {
         return;
       }
       if (isPremium && !isUnlockedPremium) {
-        setDialogue('This is a premium chapter. Unlock it to access advanced content!', 2000);
-        return;
+        setDialogue('Premium chapter! You can try it, but consider unlocking for full access!', 2000);
       }
       closeOverlay(settingsPanel);
       loadChapter(i, { withCinematic: true });
@@ -1846,8 +1845,7 @@ async function loadChapter(chapterNumber, options = {}) {
   }
 
   if (!canAccessChapter(chapter)) {
-    setDialogue('This chapter is premium. Unlock it to continue learning!', 1600);
-    return;
+    setDialogue('This is premium content. You can try it, but consider unlocking for full access!', 2000);
   }
 
   chapterLoadToken += 1;
