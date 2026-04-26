@@ -687,6 +687,23 @@ function unlockPremiumChapter(chapterNum) {
   persistState();
 }
 
+function purchasePremiumChapter(chapterNum) {
+  const chapterCosts = {
+    5: 500  // Chapter 5 costs 500 coins
+  };
+  const cost = chapterCosts[chapterNum];
+  if (!cost) return false;
+  
+  if (coins >= cost) {
+    coins -= cost;
+    unlockPremiumChapter(chapterNum);
+    updateHud();
+    persistState();
+    return true;
+  }
+  return false;
+}
+
 function canAccessChapter(chapterNum) {
   if (chapterNum > unlockedChapter) return false;
   if (isPremiumChapter(chapterNum) && !unlockedPremiumChapters.has(chapterNum)) return false;
@@ -1057,7 +1074,9 @@ function renderChapterButtons() {
       button.textContent = `Chapter ${i} (Locked)`;
     } else if (isPremium && !isUnlockedPremium) {
       button.classList.add('locked');
-      button.textContent = `Chapter ${i} 🔒 (Premium)`;
+      const chapterCosts = { 5: 500 };
+      const cost = chapterCosts[i];
+      button.textContent = cost ? `Chapter ${i} 🔒 (${cost} coins)` : `Chapter ${i} 🔒 (Premium)`;
     }
 
     button.addEventListener('click', () => {
@@ -1386,7 +1405,7 @@ function finishChapter() {
   }
 
   if (currentChapter === 4) {
-    unlockPremiumChapter(5);
+    // Chapter 5 is premium - does not auto-unlock, must be purchased
   }
 
   updateHud();
@@ -1858,7 +1877,21 @@ async function loadChapter(chapterNumber, options = {}) {
   }
 
   if (!canAccessChapter(chapter)) {
-    setDialogue('This is premium content. You can try it, but consider unlocking for full access!', 2000);
+    if (isPremiumChapter(chapter) && !unlockedPremiumChapters.has(chapter)) {
+      const chapterCosts = { 5: 500 };
+      const cost = chapterCosts[chapter];
+      if (cost && coins >= cost) {
+        // Auto-purchase if enough coins
+        purchasePremiumChapter(chapter);
+        setDialogue('Chapter unlocked! Enjoy the premium content!', 1500);
+      } else if (cost) {
+        setDialogue(`Premium chapter! Need ${cost} coins to unlock. You have ${coins} coins.`, 2500);
+        return;  // Don't load if can't afford
+      }
+    } else {
+      setDialogue('This is premium content. Unlock it to continue learning!', 1600);
+      return;
+    }
   }
 
   chapterLoadToken += 1;
