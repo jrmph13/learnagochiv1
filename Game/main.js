@@ -1732,7 +1732,7 @@ if (closeShop) {
   });
 }
 
-[settingsPanel, journalPanel, shopPanel, assessmentPanel, endingPanel].forEach((panel) => {
+[settingsPanel, journalPanel, shopPanel, endingPanel].forEach((panel) => {
   if (!panel) return;
   panel.addEventListener('click', (event) => {
     if (event.target === panel) {
@@ -1741,6 +1741,16 @@ if (closeShop) {
     }
   });
 });
+
+// Assessment panel should not close when clicking outside (to prevent accidental close on fail/retry)
+if (assessmentPanel) {
+  assessmentPanel.addEventListener('click', (event) => {
+    if (event.target === assessmentPanel) {
+      playClickSfx({ boost: 0.5 });
+      // Don't close assessment panel when clicking outside - user must click Retry or Continue
+    }
+  });
+}
 
 if (hintToggleBtn) {
   hintToggleBtn.addEventListener('click', () => {
