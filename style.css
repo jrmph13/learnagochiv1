@@ -358,10 +358,10 @@ button {
   left: 50%;
   top: 52%;
   transform: translate(-50%, -50%);
-  min-width: min(74vw, 660px);
+  min-width: min(84vw, 780px);
   text-align: center;
   color: #f4f4f4;
-  font-size: clamp(40px, 4vw, 76px);
+  font-size: clamp(34px, 3.6vw, 64px);
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
 }
 
@@ -395,7 +395,7 @@ button {
 }
 
 .loading-bar-fill.run {
-  animation: loadFill 1.9s linear forwards;
+  animation: loadFill 2.4s linear forwards;
 }
 
 #fade-overlay {

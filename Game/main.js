@@ -132,15 +132,15 @@ const chapters = {
     prepLabel: 'Preparing literal drills...',
     questions: [
       { value: '"duck"', type: 'string' },
-      { value: '15', type: 'int' },
-      { value: 'true', type: 'bool' },
       { value: '"pond"', type: 'string' },
-      { value: '-3', type: 'int' },
-      { value: 'false', type: 'bool' },
-      { value: '108', type: 'int' },
       { value: '"Eppy"', type: 'string' },
+      { value: '"learn"', type: 'string' },
+      { value: '15', type: 'int' },
+      { value: '-3', type: 'int' },
+      { value: '108', type: 'int' },
       { value: '0', type: 'int' },
-      { value: '"learn"', type: 'string' }
+      { value: 'true', type: 'bool' },
+      { value: 'false', type: 'bool' }
     ]
   },
   2: {
@@ -160,15 +160,15 @@ const chapters = {
     prepLabel: 'Preparing variable drills...',
     questions: [
       { value: '"coins"', type: 'string' },
-      { value: '256', type: 'int' },
       { value: '"player_name"', type: 'string' },
-      { value: 'true', type: 'bool' },
-      { value: '-120', type: 'int' },
       { value: '"level_up"', type: 'string' },
-      { value: 'false', type: 'bool' },
+      { value: '"mission -2"', type: 'string' },
+      { value: '256', type: 'int' },
+      { value: '-120', type: 'int' },
       { value: '42', type: 'int' },
-      { value: '"mission-2"', type: 'string' },
-      { value: '730', type: 'int' }
+      { value: '730', type: 'int' },
+      { value: 'true', type: 'bool' },
+      { value: 'false', type: 'bool' }
     ]
   },
   3: {
@@ -188,15 +188,15 @@ const chapters = {
     prepLabel: 'Preparing Java debug drills...',
     questions: [
       { prompt: 'Find the TYPE MISMATCH. Target: boolean variable.', lines: ['boolean isReady = "true";', 'int points = 25;', 'String mascot = "Eppy";'], answerIndex: 0, hintText: 'In Java, boolean must be true or false without quotes. "true" is a String.' },
-      { prompt: 'Find the TYPE MISMATCH. Target: int variable.', lines: ['String label = "Score";', 'int lives = "3";', 'boolean ok = false;'], answerIndex: 1, hintText: 'In Java, int holds numbers only. "3" with quotes is a String.' },
-      { prompt: 'Find the TYPE MISMATCH. Target: String variable.', lines: ['String chapterName = 4;', 'int accuracy = 98;', 'boolean enabled = false;'], answerIndex: 0, hintText: 'In Java, a String must have quotes. 4 without quotes is an int.' },
       { prompt: 'Find the TYPE MISMATCH. Target: boolean variable.', lines: ['int coins = 110;', 'boolean hasBadge = "true";', 'String hint = "false";'], answerIndex: 1, hintText: 'In Java, boolean uses true or false without quotes. "true" is a String.' },
+      { prompt: 'Find the TYPE MISMATCH. Target: boolean variable.', lines: ['String mode = "on";', 'boolean power = 1;', 'int level = 5;'], answerIndex: 1, hintText: 'In Java, boolean only accepts true or false. 1 is an int, not a boolean.' },
+      { prompt: 'Find the TYPE MISMATCH. Target: int variable.', lines: ['String label = "Score";', 'int lives = "3";', 'boolean ok = false;'], answerIndex: 1, hintText: 'In Java, int holds numbers only. "3" with quotes is a String.' },
       { prompt: 'Find the TYPE MISMATCH. Target: int variable.', lines: ['boolean isCalm = true;', 'int totalCoins = "540";', 'String bestScore = "100";'], answerIndex: 1, hintText: 'In Java, int cannot hold quoted values. "540" is a String.' },
+      { prompt: 'Find the TYPE MISMATCH. Target: int variable.', lines: ['String id = "99";', 'boolean flag = true;', 'int age = 15.5;'], answerIndex: 2, hintText: 'In Java, int holds whole numbers only. 15.5 is a double, not an int.' },
+      { prompt: 'Find the TYPE MISMATCH. Target: String variable.', lines: ['String chapterName = 4;', 'int accuracy = 98;', 'boolean enabled = false;'], answerIndex: 0, hintText: 'In Java, a String must have quotes. 4 without quotes is an int.' },
       { prompt: 'Find the TYPE MISMATCH. Target: String variable.', lines: ['int chapterCode = 503;', 'boolean isComplete = false;', 'String duckName = 42;'], answerIndex: 2, hintText: 'In Java, a String needs quotes around it. 42 without quotes is an int.' },
       { prompt: 'Find the TYPE MISMATCH. Target: char variable.', lines: ['char grade = "A";', 'int score = 95;', 'String name = "Eppy";'], answerIndex: 0, hintText: 'In Java, char uses single quotes like \'A\'. "A" with double quotes is a String.' },
-      { prompt: 'Find the TYPE MISMATCH. Target: double variable.', lines: ['String piText = "3.14";', 'double pi = "3.14";', 'int count = 10;'], answerIndex: 1, hintText: 'In Java, double holds decimal numbers without quotes. "3.14" with quotes is a String.' },
-      { prompt: 'Find the TYPE MISMATCH. Target: int variable.', lines: ['String id = "99";', 'boolean flag = true;', 'int age = 15.5;'], answerIndex: 2, hintText: 'In Java, int holds whole numbers only. 15.5 is a double, not an int.' },
-      { prompt: 'Find the TYPE MISMATCH. Target: boolean variable.', lines: ['String mode = "on";', 'boolean power = 1;', 'int level = 5;'], answerIndex: 1, hintText: 'In Java, boolean only accepts true or false. 1 is an int, not a boolean.' }
+      { prompt: 'Find the TYPE MISMATCH. Target: double variable.', lines: ['String piText = "3.14";', 'double pi = "3.14";', 'int count = 10;'], answerIndex: 1, hintText: 'In Java, double holds decimal numbers without quotes. "3.14" with quotes is a String.' }
     ]
   },
   4: {
@@ -215,24 +215,24 @@ const chapters = {
     ],
     prepLabel: 'Preparing JavaScript quiz...',
     questions: [
-      { prompt: 'What is the type of: let x = "hello";', choices: ['String', 'Number', 'Boolean'], answerIndex: 0, hintText: 'In JavaScript, values inside quotes are always Strings.' },
-      { prompt: 'What is the type of: let y = 42;', choices: ['String', 'Number', 'Boolean'], answerIndex: 1, hintText: 'In JavaScript, numbers without quotes are Number type.' },
-      { prompt: 'What is the type of: let z = true;', choices: ['String', 'Number', 'Boolean'], answerIndex: 2, hintText: 'In JavaScript, true and false without quotes are Boolean type.' },
+      { prompt: 'What variable type is this? let x = "hello";', choices: ['String', 'Int', 'Boolean'], answerIndex: 0, hintText: 'In JavaScript, values inside quotes are Strings.' },
+      { prompt: 'What variable type is this? let y = 42;', choices: ['String', 'Int', 'Boolean'], answerIndex: 1, hintText: 'For this lesson, whole numbers without quotes are treated as Int values.' },
+      { prompt: 'What variable type is this? let z = true;', choices: ['String', 'Int', 'Boolean'], answerIndex: 2, hintText: 'true and false without quotes are Boolean values.' },
+      { prompt: 'What variable type is this? let a = "false";', choices: ['String', 'Int', 'Boolean'], answerIndex: 0, hintText: 'Even the word "false" is a String when it has quotes.' },
+      { prompt: 'What variable type is this? let b = 0;', choices: ['String', 'Int', 'Boolean'], answerIndex: 1, hintText: '0 without quotes is a whole-number value.' },
       { prompt: 'Which value is a String in JavaScript?', choices: ['"42"', '42', 'true'], answerIndex: 0, hintText: 'In JavaScript, anything inside quotes is a String.' },
-      { prompt: 'Which value is a Boolean in JavaScript?', choices: ['"false"', 'false', '0'], answerIndex: 1, hintText: 'In JavaScript, Boolean is true or false without any quotes.' },
-      { prompt: 'Which value is a Number in JavaScript?', choices: ['"100"', '100', 'true'], answerIndex: 1, hintText: 'In JavaScript, numbers have no quotes.' },
-      { prompt: 'What is the type of: let a = "false";', choices: ['String', 'Number', 'Boolean'], answerIndex: 0, hintText: 'Even the word "false" becomes a String if it has quotes around it.' },
-      { prompt: 'Which is NOT a Number in JavaScript?', choices: ['0', '-5', '"5"'], answerIndex: 2, hintText: '"5" has quotes, so it is a String, not a Number.' },
-      { prompt: 'What is the type of: let b = 0;', choices: ['String', 'Number', 'Boolean'], answerIndex: 1, hintText: '0 is a numeric value without quotes, so it is a Number.' },
-      { prompt: 'Which value is a String?', choices: ['"Eppy"', 'Eppy', '123'], answerIndex: 0, hintText: 'Only values wrapped in quotes are Strings.' }
+      { prompt: 'Which value is a Boolean in JavaScript?', choices: ['"false"', 'false', '0'], answerIndex: 1, hintText: 'Boolean is true or false without any quotes.' },
+      { prompt: 'Which value is an Int in JavaScript?', choices: ['"100"', '100', 'true'], answerIndex: 1, hintText: 'Whole numbers have no quotes in this lesson.' },
+      { prompt: 'Which value is a String in JavaScript?', choices: ['"Eppy"', 'Eppy', '123'], answerIndex: 0, hintText: 'Only values wrapped in quotes are Strings.' },
+      { prompt: 'Which is NOT an Int in JavaScript?', choices: ['0', '-5', '"5"'], answerIndex: 2, hintText: '"5" has quotes, so it is a String, not an Int.' }
     ]
   },
   5: {
     mode: 'fill_missing',
     language: 'JavaScript',
-    title: 'Chapter 5: Fill in the Blanks [JavaScript] 🔒',
+    title: 'Chapter 5: Fill in the Blanks [JavaScript] [Premium]',
     cost: 300,
-    cue: 'Choose the best token to complete the JavaScript code.',
+    cue: 'Choose the right answer to fill in the blanks.',
     storyHook: 'Story: Final JavaScript review with Eppy before the ending story.',
     learningGoal: 'Goal: Fill blanks with correct JavaScript values (same topics as Chapter 4).',
     sceneAsset: '../assets/scenes/scene-ch4-festival.svg',
@@ -245,15 +245,15 @@ const chapters = {
     premium: true,
     questions: [
       { prompt: 'Fill the blank so name is a String.', snippet: 'let name = ___;', choices: ['"Eppy"', 'Eppy', '123'], answerIndex: 0, hintText: 'Strings in JavaScript must be wrapped in quotes.' },
-      { prompt: 'Fill the blank so age is a Number.', snippet: 'let age = ___;', choices: ['"25"', '25', 'true'], answerIndex: 1, hintText: 'Numbers in JavaScript have no quotes.' },
+      { prompt: 'Fill the blank so age is an Int.', snippet: 'let age = ___;', choices: ['"25"', '25', 'true'], answerIndex: 1, hintText: 'Whole numbers in this lesson have no quotes.' },
       { prompt: 'Fill the blank so active is a Boolean.', snippet: 'let active = ___;', choices: ['"true"', 'true', '1'], answerIndex: 1, hintText: 'Boolean in JavaScript is true or false without quotes.' },
       { prompt: 'Fill the blank so tag is a String.', snippet: 'let tag = ___;', choices: ['"pond"', 'pond', '25'], answerIndex: 0, hintText: 'Text values need quotes to be Strings.' },
-      { prompt: 'Fill the blank so score is a Number.', snippet: 'let score = ___;', choices: ['"0"', '0', 'true'], answerIndex: 1, hintText: '0 without quotes is a Number in JavaScript.' },
+      { prompt: 'Fill the blank so score is an Int.', snippet: 'let score = ___;', choices: ['"0"', '0', 'true'], answerIndex: 1, hintText: '0 without quotes is a whole-number value.' },
       { prompt: 'Fill the blank so done is a Boolean.', snippet: 'let done = ___;', choices: ['false', '"false"', '"0"'], answerIndex: 0, hintText: 'false without quotes is the Boolean value.' },
       { prompt: 'Fill the blank so message is a String.', snippet: 'let message = ___;', choices: ['"done"', 'done', '100'], answerIndex: 0, hintText: 'Strings must have quotes around them.' },
-      { prompt: 'Fill the blank so count is a Number.', snippet: 'let count = ___;', choices: ['"5"', '-5', '"five"'], answerIndex: 1, hintText: '-5 is a valid Number in JavaScript.' },
+      { prompt: 'Fill the blank so count is an Int.', snippet: 'let count = ___;', choices: ['"5"', '5', '"five"'], answerIndex: 1, hintText: '5 without quotes is a whole-number value.' },
       { prompt: 'Fill the blank so flag is a Boolean.', snippet: 'let flag = ___;', choices: ['true', '"true"', '1'], answerIndex: 0, hintText: 'true without quotes is the Boolean value.' },
-      { prompt: 'Fill the blank so label is a String.', snippet: 'let label = ___;', choices: ['"end"', 'end', 'false'], answerIndex: 0, hintText: 'Text needs quotes to become a String.' }
+      { prompt: 'Fill the blank so label is a String.', snippet: 'let label = ___;', choices: ['"end"', 'End', 'False'], answerIndex: 0, hintText: 'Text needs quotes to become a String.' }
     ]
   }
 };
@@ -1801,7 +1801,7 @@ async function playChapterCinematic(chapter) {
     await wait(140);
     cinematicLine.textContent = line;
     cinematicLine.classList.add('show');
-    await waitOrSkip(1300, runId);
+    await waitOrSkip(1800, runId);
   }
 
   if (cinematicLoading && runId === cinematicRunId) {
@@ -1814,7 +1814,7 @@ async function playChapterCinematic(chapter) {
     cinematicLoadingFill.classList.add('run');
   }
 
-  await waitOrSkip(1850, runId);
+  await waitOrSkip(2600, runId);
 
   closeCinematic();
   cinematicPlaying = false;

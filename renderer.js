@@ -38,8 +38,8 @@ const DEFAULT_TIMINGS = {
   fadeOut: 460,
   skipFade: 260,
   rainyHold: 700,
-  loadingHold: 900,
-  loadingMessageStep: 650,
+  loadingHold: 2400,
+  loadingMessageStep: 900,
   storyFrameStep: 4000,
   storyFrameFade: 560,
   storyLastHold: 520
@@ -51,8 +51,8 @@ const FAST_TIMINGS = {
   fadeOut: 460,
   skipFade: 260,
   rainyHold: 700,
-  loadingHold: 900,
-  loadingMessageStep: 650,
+  loadingHold: 1800,
+  loadingMessageStep: 900,
   storyFrameStep: 4000,
   storyFrameFade: 560,
   storyLastHold: 520
@@ -157,7 +157,12 @@ function setLoadingMessage(message) {
 }
 
 function startLoadingMessages() {
-  const messages = ['Loading', 'Feeding duck', 'Preparing chapter', 'Syncing progress'];
+  const messages = [
+    'Loading lesson...',
+    'Read the instruction first',
+    'Drag values to the correct type',
+    'Check quotes before answering'
+  ];
   let index = 0;
 
   stopLoadingMessages();
