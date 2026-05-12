@@ -1009,6 +1009,53 @@ body::before {
   margin-top: 4px;
 }
 
+.references-modal {
+  padding: 24px 26px;
+}
+
+.references-modal h2 {
+  margin: 0 0 14px;
+  font-size: clamp(30px, 2.2vw, 40px);
+}
+
+.references-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.references-grid article {
+  border-radius: 12px;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.references-list {
+  grid-column: 1 / -1;
+}
+
+.references-grid h3 {
+  margin: 0 0 6px;
+  font-size: clamp(21px, 1.5vw, 26px);
+}
+
+.references-grid ul {
+  margin: 0;
+  padding-left: 18px;
+  font-size: clamp(15px, 1vw, 19px);
+  line-height: 1.28;
+}
+
+.references-grid li + li {
+  margin-top: 5px;
+}
+
+.journal a,
+.references-grid a {
+  color: #265a88;
+  overflow-wrap: anywhere;
+}
+
 .journal code {
   padding: 0 4px;
   border-radius: 6px;
@@ -1286,7 +1333,8 @@ body::before {
   }
 
   .journal-grid,
-  .notebook-grid {
+  .notebook-grid,
+  .references-grid {
     grid-template-columns: 1fr;
   }
 }
